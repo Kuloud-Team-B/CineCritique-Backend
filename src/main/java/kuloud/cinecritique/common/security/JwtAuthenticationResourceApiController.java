@@ -19,32 +19,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class JwtAuthenticationResourceApiController {
-    private final JwtEncoder jwtEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/authenticate")
     @PermitAll
     public JwtResponse authenticate(Authentication authentication) {
-        return new JwtResponse(createToken(authentication));
-    }
-
-    private String createToken(Authentication authentication) {
-        return jwtEncoder.encode(createJwtEncoderParams(authentication)).getTokenValue();
-    }
-
-    private JwtEncoderParameters createJwtEncoderParams(Authentication authentication) {
-        return JwtEncoderParameters.from(JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(1800))
-                .subject(authentication.getName())
-                .claim("scope", createClaim(authentication))
-                .build()
-        );
-    }
-
-    private String createClaim(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        return new JwtResponse(jwtTokenProvider.createToken(authentication));
     }
 }

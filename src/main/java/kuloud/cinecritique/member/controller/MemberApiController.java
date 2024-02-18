@@ -1,6 +1,10 @@
 package kuloud.cinecritique.member.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
+import kuloud.cinecritique.common.entity.JwtResponse;
+import kuloud.cinecritique.common.security.JwtAuthenticationResourceApiController;
 import kuloud.cinecritique.member.dto.MemberDto;
 import kuloud.cinecritique.member.dto.MemberPostDto;
 import kuloud.cinecritique.member.dto.MyPageDto;
@@ -8,8 +12,11 @@ import kuloud.cinecritique.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,11 +39,18 @@ public class MemberApiController {
         return memberService.checkNicknameIsDuplicated(nickname);
     }
 
+    @GetMapping("/memberList")
+    public ResponseEntity<List<MyPageDto>> getMemberList() {
+        return memberService.getMemberList();
+    }
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/my-page")
     public ResponseEntity<MyPageDto> getMyPageInfo() {
         return memberService.getMyPageInfo(getLoggedInNickname());
     }
+
+
 
     private String getLoggedInNickname() {
         return SecurityContextHolder.getContext().getAuthentication().getName();

@@ -25,7 +25,9 @@ public enum ErrorCode {
     // member
     DUPLICATED_NICKNAME(BAD_REQUEST, "중복된 닉네임입니다."),
     NOT_EXIST_MEMBER(BAD_REQUEST, "해당 이름의 사용자를 찾을 수 없습니다."),
-    BAD_PARAMETER(BAD_REQUEST, "양식에 맞춰서 입력해주세요.")
+    NOT_EXIST_EMAIL(BAD_REQUEST, "해당 이메일을 찾을 수 없습니다."),
+    BAD_PARAMETER(BAD_REQUEST, "양식에 맞춰서 입력해주세요."),
+    INVALID_LOGIN(BAD_REQUEST, "비밀번호가 다릅니다.")
     ;
     private final HttpStatus httpStatus;
     private final String errorMessage;
