@@ -17,20 +17,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final JwtEncoder jwtEncoder;
+    private int EXPIRES_LIMIT = 1800;
 
-    public String createToken(Authentication authentication) {
+    public String createTokenWithAuthentication(Authentication authentication) {
         return jwtEncoder.encode(createJwtEncoderParams(authentication)).getTokenValue();
+    }
+
+    public String createTokenWithEmail(String email) {
+        return jwtEncoder.encode(createJwtEncoderParams(email)).getTokenValue();
     }
 
     private JwtEncoderParameters createJwtEncoderParams(Authentication authentication) {
         return JwtEncoderParameters.from(JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plusSeconds(1800))
+                .expiresAt(Instant.now().plusSeconds(EXPIRES_LIMIT))
                 .subject("USER")
                 .claim("scope", createClaim(authentication))
                 .build()
         );
+    }
+
+    private JwtEncoderParameters createJwtEncoderParams(String email) {
+        return JwtEncoderParameters.from(JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(EXPIRES_LIMIT))
+                .subject(email)
+                .claim("scope", "ROLE_USER")
+                .build());
     }
 
     private String createClaim(Authentication authentication) {

@@ -10,6 +10,7 @@ import kuloud.cinecritique.member.dto.MyPageDto;
 import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,6 +33,15 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
+    public void signIn(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new CustomException(ErrorCode.INVALID_LOGIN);
+        }
+    }
 
     @Transactional
     public ResponseEntity<Void> createMemberAccountAndSave(MemberPostDto memberPostDto) {
@@ -65,8 +76,10 @@ public class MemberService {
     }
 
     public ResponseEntity<MyPageDto> getMyPageInfo(String nickname) {
-        Member member = memberRepository.findByNickname(nickname)
+        log.info("{} user search", nickname);
+        Member member = memberRepository.findByEmail(nickname)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+
         return ResponseEntity.ok(MyPageDto.createWith(member));
     }
 }

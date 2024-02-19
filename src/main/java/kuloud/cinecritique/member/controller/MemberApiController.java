@@ -1,10 +1,12 @@
 package kuloud.cinecritique.member.controller;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import kuloud.cinecritique.common.entity.JwtResponse;
 import kuloud.cinecritique.common.security.JwtAuthenticationResourceApiController;
+import kuloud.cinecritique.common.security.JwtTokenProvider;
 import kuloud.cinecritique.member.dto.MemberDto;
 import kuloud.cinecritique.member.dto.MemberPostDto;
 import kuloud.cinecritique.member.dto.MyPageDto;
@@ -23,6 +25,15 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberApiController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @GetMapping("/sign-in")
+    @PermitAll
+    public JwtResponse authenticate(@RequestParam String email,
+                                    @RequestParam String password) {
+        memberService.signIn(email, password);
+        return new JwtResponse(jwtTokenProvider.createTokenWithEmail(email));
+    }
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid MemberPostDto memberPostDto) {
@@ -49,8 +60,6 @@ public class MemberApiController {
     public ResponseEntity<MyPageDto> getMyPageInfo() {
         return memberService.getMyPageInfo(getLoggedInNickname());
     }
-
-
 
     private String getLoggedInNickname() {
         return SecurityContextHolder.getContext().getAuthentication().getName();

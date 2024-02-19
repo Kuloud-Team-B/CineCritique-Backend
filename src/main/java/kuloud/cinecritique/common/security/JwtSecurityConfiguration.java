@@ -55,6 +55,7 @@ public class JwtSecurityConfiguration {
     }
 
     /**
+     * Jwt 접두사 제거 컨버터
      * jwt 생성시에는 제대로 권한이 생성됨, ROLE_USER
      * 전달받은 jwt를 읽어서 role을 읽을 때 붙는 SCOPE_ 제거, SCOPE_ROLE_USER
      */
