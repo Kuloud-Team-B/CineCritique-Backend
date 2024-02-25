@@ -2,10 +2,7 @@ package kuloud.cinecritique.member.controller;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import kuloud.cinecritique.common.entity.JwtResponse;
-import kuloud.cinecritique.common.security.JwtAuthenticationResourceApiController;
 import kuloud.cinecritique.common.security.JwtTokenProvider;
 import kuloud.cinecritique.member.dto.MemberDto;
 import kuloud.cinecritique.member.dto.MemberPostDto;
@@ -14,7 +11,6 @@ import kuloud.cinecritique.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 

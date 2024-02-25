@@ -1,9 +1,7 @@
 package kuloud.cinecritique.member.service;
 
-import kuloud.cinecritique.common.entity.JwtResponse;
 import kuloud.cinecritique.common.exception.CustomException;
 import kuloud.cinecritique.common.exception.ErrorCode;
-import kuloud.cinecritique.common.security.JwtTokenProvider;
 import kuloud.cinecritique.member.dto.MemberDto;
 import kuloud.cinecritique.member.dto.MemberPostDto;
 import kuloud.cinecritique.member.dto.MyPageDto;
@@ -12,18 +10,11 @@ import kuloud.cinecritique.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,7 +23,6 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public void signIn(String email, String password) {
         Member member = memberRepository.findByEmail(email)
