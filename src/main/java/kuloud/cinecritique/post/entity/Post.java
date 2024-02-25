@@ -1,0 +1,92 @@
+package kuloud.cinecritique.post.entity;
+
+import jakarta.persistence.*;
+import kuloud.cinecritique.member.entity.Member;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import kuloud.cinecritique.common.entity.BaseEntity;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Post extends BaseEntity{
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long Id;
+
+    @Column(nullable = false, length = 15)
+    private String title;
+
+    @Column(nullable = false, length = 200)
+    private String content;
+
+    /* 첨부 이미지 처리 필요*/
+    @Column(name = "post_img")
+    private String postImg;
+
+    // 평점
+    @Column(nullable = false)
+    private int rating;
+
+    // 태그
+    @Column(length = 40)
+    private String hashtag;
+
+    // 조회수
+    @ColumnDefault("0")
+    @Column(name = "view_count",nullable = false)
+    private Integer viewCount;
+
+
+    // 좋아요 수 관리
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Member.class)
+    @JoinColumn(name = "member_id", updatable = false)
+    private Member member;
+
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Movie.class)
+    @JoinColumn(name = "movie_id", updatable = false)
+    private Movie movie;
+
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Cinema.class)
+    @JoinColumn(name = "cinema_id", updatable = false)
+    private Cinema cinema;
+
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Goods.class)
+    @JoinColumn(name = "goods_id", updatable = false)
+    private Goods goods;
+
+    @Builder
+    public Post(String title, String content, String postImg, int rating, String hashtag, Member member,
+                Movie movie, Cinema cinema, Goods goods) {
+        this.title = title;
+        this.content = content;
+        this.postImg = postImg;
+        this.rating = rating;
+        this.hashtag = hashtag;
+        this.member = member;
+        this.movie = movie;
+        this.cinema = cinema;
+        this.goods = goods;
+    }
+
+    // 게시글 내용 업데이트를 위한 메소드
+    public void update(String title, String content) {
+        if (title != null && !title.isEmpty()) {
+            this.title = title;
+        }
+        if (content != null && !content.isEmpty()) {
+            this.content = content;
+        }
+    }
+}
