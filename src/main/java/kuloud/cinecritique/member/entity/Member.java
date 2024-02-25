@@ -9,17 +9,22 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity implements UserDetails {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
     private String nickname;
-    private String phoneNumber;
+    private String email;
     private String password;
+    private String profileImage;
 
     public void changeNickName(String nickname) {
         this.nickname = nickname;
@@ -29,14 +34,49 @@ public class Member extends BaseTimeEntity {
         this.password = password;
     }
 
-    public void changePhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void changeEmail(String email) {
+        this.email = email;
+    }
+
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     @Builder
-    public Member(String nickname, String phoneNumber, String password) {
+    public Member(String nickname, String email, String password, String profileImage) {
         this.nickname = nickname;
-        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.password = password;
+        this.profileImage = profileImage;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }
