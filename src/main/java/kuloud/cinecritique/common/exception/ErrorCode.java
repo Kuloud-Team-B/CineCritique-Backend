@@ -20,7 +20,8 @@ public enum ErrorCode {
 
     // race
 
-    // racetrack
+    // movie
+    NOT_EXIST_MOVIE(BAD_REQUEST, "해당 영화를 찾을 수 없습니다."),
 
     // member
     DUPLICATED_NICKNAME(BAD_REQUEST, "중복된 닉네임입니다."),
