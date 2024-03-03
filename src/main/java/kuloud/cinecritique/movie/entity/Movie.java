@@ -32,4 +32,29 @@ public class Movie extends BaseTimeEntity {
         this.grade = grade;
         this.genre = genre;
     }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeTitleImg(String titleImg) {
+        this.titleImg = titleImg;
+    }
+
+    public void changeReleasedDate(LocalDate releasedDate) {
+        this.releasedDate = releasedDate;
+    }
+
+    public void changeSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void changeGrade(MovieGrade grade) {
+        this.grade = grade;
+    }
+
+    public void changeGenre(MovieGenre genre) {
+        this.genre = genre;
+    }
+
 }

@@ -8,15 +8,12 @@ import kuloud.cinecritique.member.dto.MyPageDto;
 import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,42 +31,64 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseEntity<Void> createMemberAccountAndSave(MemberPostDto memberPostDto) {
-        if (memberRepository.findByNickname(memberPostDto.getNickname()).isPresent()) {
-            throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
-        }
+    public void signUp(MemberPostDto memberPostDto) {
+        checkNicknameIsDuplicated(memberPostDto.getNickname());
+        checkEmailIsDuplicated(memberPostDto.getEmail());
         memberRepository.save(memberPostDto.toEntityWithEncoder(passwordEncoder));
-        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<MemberDto> getMemberInformation(String nickname) {
+    public MemberDto getMemberInformation(String nickname) {
         Member member = memberRepository.findByNickname(nickname)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
-        return ResponseEntity.ok(MemberDto.createWith(member));
+        return new MemberDto(member);
     }
 
-    public ResponseEntity<Void> checkNicknameIsDuplicated(String nickname) {
+    public void checkNicknameIsDuplicated(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATED_NICKNAME);
         }
-        return ResponseEntity.noContent().build();
     }
 
-    public void checkEmailIsExist(String email) {
-        if (memberRepository.findByEmail(email).isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_EXIST_EMAIL);
+    public void checkEmailIsDuplicated(String email) {
+        if (memberRepository.findByEmail(email).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
         }
     }
 
-    public ResponseEntity<List<MyPageDto>> getMemberList() {
-        return ResponseEntity.ok(memberRepository.findAll().stream().map(MyPageDto::createWith).toList());
+    @Transactional
+    public void updateMemberInfo(MemberPostDto memberPostDto, String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+        Member updateMember = memberPostDto.toEntityWithEncoder(passwordEncoder);
+
+        if (!member.getNickname().equals(memberPostDto.getNickname())) {
+            checkNicknameIsDuplicated(updateMember.getNickname());
+            member.changeNickName(updateMember.getNickname());
+        }
+        if (!member.getEmail().equals(memberPostDto.getEmail())) {
+            checkEmailIsDuplicated(updateMember.getEmail());
+            member.changeEmail(updateMember.getEmail());
+        }
+        member.changeProfileImage(updateMember.getProfileImage());
+        member.changePassword(updateMember.getPassword());
     }
 
-    public ResponseEntity<MyPageDto> getMyPageInfo(String nickname) {
-        log.info("{} user search", nickname);
-        Member member = memberRepository.findByEmail(nickname)
+    public List<MyPageDto> getMemberList() {
+        return memberRepository.findAll().stream().map(MyPageDto::new).toList();
+    }
+
+    @Transactional
+    public void deleteMember(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
+        memberRepository.delete(member);
+    }
+
+    public MyPageDto getMyPageInfo(String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
-        return ResponseEntity.ok(MyPageDto.createWith(member));
+        return new MyPageDto(member);
     }
+
 }

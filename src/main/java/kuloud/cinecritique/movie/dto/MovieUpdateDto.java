@@ -1,7 +1,6 @@
 package kuloud.cinecritique.movie.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import kuloud.cinecritique.movie.entity.Movie;
 import kuloud.cinecritique.movie.entity.MovieGenre;
 import kuloud.cinecritique.movie.entity.MovieGrade;
 import lombok.Getter;
@@ -11,7 +10,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class MoviePostDto {
+public class MovieUpdateDto {
+    @NotBlank
+    private String beforeName;
     @NotBlank
     private String name;
     @NotBlank
@@ -22,8 +23,4 @@ public class MoviePostDto {
     private String summary;
     private MovieGrade grade;
     private MovieGenre genre;
-
-    public Movie toEntity() {
-        return new Movie(name,titleImg,releasedDate,summary,grade,genre);
-    }
 }

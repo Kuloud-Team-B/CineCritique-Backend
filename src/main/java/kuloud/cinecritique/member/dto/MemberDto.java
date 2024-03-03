@@ -2,9 +2,17 @@ package kuloud.cinecritique.member.dto;
 
 
 import kuloud.cinecritique.member.entity.Member;
+import lombok.Getter;
+import lombok.Setter;
 
-public record MemberDto(String nickname, String profileImage) {
-    public static MemberDto createWith(Member member) {
-        return new MemberDto(member.getNickname(), member.getProfileImage());
+@Getter
+@Setter
+public class MemberDto {
+    private String nickname;
+    private String profileImg;
+
+    public MemberDto(Member member) {
+        this.nickname = member.getNickname();
+        this.profileImg = member.getProfileImage();
     }
 }
