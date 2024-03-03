@@ -1,12 +1,17 @@
 package kuloud.cinecritique.movie.entity;
 
 import jakarta.persistence.*;
+import kuloud.cinecritique.common.entity.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Entity
 @Getter
-public class Movie {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Movie extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "movie_id")
     private Long id;
@@ -19,5 +24,37 @@ public class Movie {
     @Enumerated(value = EnumType.STRING)
     private MovieGenre genre;
 
+    public Movie(String name, String titleImg, LocalDate releasedDate, String summary, MovieGrade grade, MovieGenre genre) {
+        this.name = name;
+        this.titleImg = titleImg;
+        this.releasedDate = releasedDate;
+        this.summary = summary;
+        this.grade = grade;
+        this.genre = genre;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeTitleImg(String titleImg) {
+        this.titleImg = titleImg;
+    }
+
+    public void changeReleasedDate(LocalDate releasedDate) {
+        this.releasedDate = releasedDate;
+    }
+
+    public void changeSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void changeGrade(MovieGrade grade) {
+        this.grade = grade;
+    }
+
+    public void changeGenre(MovieGenre genre) {
+        this.genre = genre;
+    }
 
 }

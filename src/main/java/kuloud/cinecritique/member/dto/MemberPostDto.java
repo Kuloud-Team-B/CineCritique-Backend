@@ -4,12 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import kuloud.cinecritique.member.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
-@AllArgsConstructor
+@Setter
 public class MemberPostDto {
     @NotBlank
     private String nickname;
@@ -27,4 +27,5 @@ public class MemberPostDto {
                 .profileImage(profileImage)
                 .build();
     }
+
 }

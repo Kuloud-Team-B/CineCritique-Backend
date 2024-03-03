@@ -1,7 +1,6 @@
 package kuloud.cinecritique.common.security;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -12,12 +11,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final JwtEncoder jwtEncoder;
-    private int EXPIRES_LIMIT = 1800;
+    private final int EXPIRES_LIMIT = 1800;
 
     public String createTokenWithAuthentication(Authentication authentication) {
         return jwtEncoder.encode(createJwtEncoderParams(authentication)).getTokenValue();
