@@ -1,6 +1,7 @@
 package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import kuloud.cinecritique.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,9 +22,11 @@ public class Post extends BaseEntity{
     @Column(name = "post_id")
     private Long Id;
 
+    @NotBlank(message = "제목을 입력해주세요.")
     @Column(nullable = false, length = 15)
     private String title;
 
+    @NotBlank(message = "내용을 입력해주세요.")
     @Column(nullable = false, length = 200)
     private String content;
 

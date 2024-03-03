@@ -1,11 +1,10 @@
 package kuloud.cinecritique.post.controller;
 
-import kuloud.cinecritique.post.dto.PostDto;
+import kuloud.cinecritique.post.dto.PostRequestDto;
 import kuloud.cinecritique.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 
@@ -15,29 +14,27 @@ public class PostApiController {
 
     private final PostService postService;
 
+
     @Autowired
     public PostApiController(PostService postService) {
         this.postService = postService;
     }
 
-    // REST API 엔드포인트들...
     @PostMapping
-    public ResponseEntity<Void> createPost(@RequestBody PostDto postDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        postService.createPost(postDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Long> createPost(@RequestBody PostRequestDto postRequestDto) {
+        Long postId = postService.createPost(postRequestDto, SecurityContextHolder.getContext().getAuthentication().getName());
+        return ResponseEntity.ok(postId);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostDto postDto) {
-        postService.updatePost(id, postDto);
+    public ResponseEntity<Void> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto) {
+        postService.updatePost(id, postRequestDto, SecurityContextHolder.getContext().getAuthentication().getName());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+        postService.deletePost(id, SecurityContextHolder.getContext().getAuthentication().getName());
         return ResponseEntity.noContent().build();
     }
 }
