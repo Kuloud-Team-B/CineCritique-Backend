@@ -2,15 +2,20 @@ package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kuloud.cinecritique.cinema.entity.Cinema;
+import kuloud.cinecritique.common.entity.BaseEntity;
+import kuloud.cinecritique.goods.entity.Goods;
+import kuloud.cinecritique.member.entity.Like;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.movie.entity.Movie;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import kuloud.cinecritique.common.entity.BaseEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity

@@ -4,8 +4,8 @@ import kuloud.cinecritique.post.dto.PostRequestDto;
 import kuloud.cinecritique.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController // REST API를 위한 컨트롤러로 변경

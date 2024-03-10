@@ -47,7 +47,7 @@ public class MovieApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<Void> deleteMovie(@RequestParam String name) {
         movieService.deleteMovie(name);
         return ResponseEntity.noContent().build();

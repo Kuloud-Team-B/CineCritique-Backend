@@ -13,12 +13,17 @@ public enum ErrorCode {
     // authorization
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "접근 권한이 없습니다."),
 
-    // horse
-    NOT_EXIST_HORSE(BAD_REQUEST, "조건에 맞는 말이 없습니다."),
+    // goods
+    NOT_EXIST_GOODS(BAD_REQUEST, "해당 굿즈가 존재하지 않습니다."),
+    DUPLICATED_GOODS_NAME(BAD_REQUEST, "중복된 이름의 굿즈가 존재합니다."),
 
-    // jockey
+    // cinema
+    NOT_EXIST_CINEMA(BAD_REQUEST, "해당 영화관이 존재하지 않습니다."),
+    DUPLICATED_CINEMA_NAME(BAD_REQUEST, "중복된 이름의 영화관이 존재합니다."),
 
-    // race
+    // company
+    NOT_EXIST_COMPANY(BAD_REQUEST, "해당 회사가 존재하지 않습니다."),
+    DUPLICATED_COMPANY_NAME(BAD_REQUEST, "중복된 이름의 회사가 존재합니다."),
 
     // movie
     NOT_EXIST_MOVIE(BAD_REQUEST, "해당 영화를 찾을 수 없습니다."),
