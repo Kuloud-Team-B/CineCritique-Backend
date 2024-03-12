@@ -1,6 +1,8 @@
 package kuloud.cinecritique.post.service;
 
 import kuloud.cinecritique.post.dto.PostRequestDto;
+import kuloud.cinecritique.post.entity.Hashtag;
+import kuloud.cinecritique.post.repository.HashtagRepository;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
 import kuloud.cinecritique.member.entity.Member;
@@ -16,11 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final HashtagRepository hashtagRepository;
 
     @Autowired
     private MovieRepository movieRepository;
@@ -31,10 +38,12 @@ public class PostService {
     @Autowired
     private GoodsRepository goodsRepository;
 
+
     @Autowired
-    public PostService(PostRepository postRepository, MemberRepository memberRepository) {
+    public PostService(PostRepository postRepository, MemberRepository memberRepository, HashtagRepository hashtagRepository) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
+        this.hashtagRepository = hashtagRepository;
     }
 
     // 중복된 Member 조회 로직 제거
@@ -50,9 +59,28 @@ public class PostService {
         }
     }
 
+
+    // 해시태그 처리 로직
+    private Set<Hashtag> processHashtags(String hashtagsString) {
+        Set<Hashtag> hashtags = new HashSet<>();
+        Arrays.stream(hashtagsString.split(" ")).forEach(tag -> {
+            Hashtag hashtag = hashtagRepository.findByHashtag(tag)
+                    .orElseGet(() -> {
+                        Hashtag newHashtag = new Hashtag();
+                        newHashtag.setHashtag(tag);
+                        return hashtagRepository.save(newHashtag);
+                    });
+            hashtags.add(hashtag);
+        });
+        return hashtags;
+    }
+
     @Transactional
     public Long createPost(PostRequestDto postRequestDto, String nickname) {
         Member member = getAuthenticatedMember(nickname);
+
+        // 해시태그 처리 로직 호출
+        Set<Hashtag> hashtags = processHashtags(postRequestDto.getHashtag());
 
         // Movie, Cinema, Goods 외래 키 엔티티 조회
         Movie movie = movieRepository.findById(postRequestDto.getMovieId())
@@ -68,7 +96,7 @@ public class PostService {
                 .member(member)
                 .postImg(postRequestDto.getPostImg())
                 .rating(postRequestDto.getRating())
-                .hashtag(postRequestDto.getHashtag())
+                .hashtags(hashtags)
                 .movie(movie)
                 .cinema(cinema)
                 .goods(goods)
@@ -84,7 +112,10 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + postId));
         verifyPostOwner(post, nickname);
 
-        post.update(postRequestDto.getTitle(), postRequestDto.getContent());
+        // 해시태그 처리 로직 호출
+        Set<Hashtag> hashtags = processHashtags(postRequestDto.getHashtag());
+
+        post.update(postRequestDto.getTitle(), postRequestDto.getContent(), hashtags);
         postRepository.save(post);
     }
 

@@ -1,5 +1,7 @@
 package kuloud.cinecritique.post.repository;
 
+import jakarta.validation.constraints.NotBlank;
+import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +12,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     // 사용자 정의 쿼리 메소드
-    Optional<Post> findById(Long id);
+    Optional<Post> findByTitle(@NotBlank(message = "제목을 입력해주세요.") String title);
 
     // 특정 해시태그를 가진 게시글을 찾기
     List<Post> findByHashtag(String hashtag);

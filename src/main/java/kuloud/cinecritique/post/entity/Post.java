@@ -3,22 +3,23 @@ package kuloud.cinecritique.post.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.post.entity.Hashtag;
 import kuloud.cinecritique.movie.entity.Movie;
 import kuloud.cinecritique.cinema.entity.Cinema;
 import kuloud.cinecritique.goods.entity.Goods;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import kuloud.cinecritique.common.entity.BaseEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor // 추가: 모든 필드를 포함하는 생성자를 자동 생성\
 public class Post extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +43,16 @@ public class Post extends BaseEntity{
     private int rating;
 
     // 태그
-    @Column(length = 40)
-    private String hashtag;
+    // @Column(length = 40)
+    // private String hashtag;
+    @ToString.Exclude
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "post_hashtag", // 연결 테이블 이름
+            joinColumns = @JoinColumn(name = "post_id"), // Post 엔티티 측의 외래 키
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id") // Hashtag 엔티티 측의 외래 키
+    )
+    private Set<Hashtag> hashtags = new LinkedHashSet<>();
 
     // 조회수
     @ColumnDefault("0")
@@ -76,14 +85,14 @@ public class Post extends BaseEntity{
     private Goods goods;
 
     @Builder
-    public Post(String title, String content, Member member, String postImg, int rating, String hashtag,
+    public Post(String title, String content, Member member, String postImg, int rating, Set<Hashtag> hashtags,
                 Movie movie, Cinema cinema, Goods goods) {
         this.title = title;
         this.content = content;
         this.member = member;
         this.postImg = postImg;
         this.rating = rating;
-        this.hashtag = hashtag;
+        this.hashtags = hashtags;
         this.movie = movie;
         this.cinema = cinema;
         this.goods = goods;
@@ -91,12 +100,16 @@ public class Post extends BaseEntity{
     }
 
     // 게시글 내용 업데이트를 위한 메소드
-    public void update(String title, String content) {
-        if (title != null && !title.isEmpty()) {
+    public void update(String title, String content, Set<Hashtag> updatedHashtags) {
+        if (title != null && !title.isBlank()) {
             this.title = title;
         }
-        if (content != null && !content.isEmpty()) {
+        if (content != null && !content.isBlank()) {
             this.content = content;
+        }
+        if (updatedHashtags != null) {
+            this.hashtags.clear();
+            this.hashtags.addAll(updatedHashtags);
         }
     }
 }
