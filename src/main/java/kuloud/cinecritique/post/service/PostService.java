@@ -3,8 +3,15 @@ package kuloud.cinecritique.post.service;
 import kuloud.cinecritique.post.dto.PostRequestDto;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
-import kuloud.cinecritique.member.repository.MemberRepository;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.member.repository.MemberRepository;
+import kuloud.cinecritique.movie.entity.Movie;
+import kuloud.cinecritique.movie.repository.MovieRepository;
+import kuloud.cinecritique.cinema.entity.Cinema;
+import kuloud.cinecritique.cinema.repository.CinemaRepository;
+import kuloud.cinecritique.goods.entity.Goods;
+import kuloud.cinecritique.goods.repository.Goods;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +21,15 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private CinemaRepository cinemaRepository;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     @Autowired
     public PostService(PostRepository postRepository, MemberRepository memberRepository) {
@@ -35,12 +51,27 @@ public class PostService {
     }
 
     @Transactional
-    public Long createPost(PostRequestDto postDto, String nickname) {
+    public Long createPost(PostRequestDto postRequestDto, String nickname) {
         Member member = getAuthenticatedMember(nickname);
+
+        // Movie, Cinema, Goods 외래 키 엔티티 조회
+        Movie movie = movieRepository.findById(postRequestDto.getMovieId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid movie ID"));
+        Cinema cinema = cinemaRepository.findById(postRequestDto.getCinemaId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid cinema ID"));
+        Goods goods = goodsRepository.findById(postRequestDto.getGoodsId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid goods ID"));
+
         Post post = Post.builder()
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
+                .title(postRequestDto.getTitle())
+                .content(postRequestDto.getContent())
                 .member(member)
+                .postImg(postRequestDto.getPostImg())
+                .rating(postRequestDto.getRating())
+                .hashtag(postRequestDto.getHashtag())
+                .movie(movie)
+                .cinema(cinema)
+                .goods(goods)
                 .build();
 
         postRepository.save(post);
@@ -48,12 +79,12 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequestDto postDto, String nickname) {
+    public void updatePost(Long postId, PostRequestDto postRequestDto, String nickname) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + postId));
         verifyPostOwner(post, nickname);
 
-        post.update(postDto.getTitle(), postDto.getContent());
+        post.update(postRequestDto.getTitle(), postRequestDto.getContent());
         postRepository.save(post);
     }
 

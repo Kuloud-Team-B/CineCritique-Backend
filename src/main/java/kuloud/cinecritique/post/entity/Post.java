@@ -3,6 +3,9 @@ package kuloud.cinecritique.post.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.movie.entity.Movie;
+import kuloud.cinecritique.cinema.entity.Cinema;
+import kuloud.cinecritique.goods.entity.Goods;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,7 +49,10 @@ public class Post extends BaseEntity{
     @ColumnDefault("0")
     @Column(name = "view_count",nullable = false)
     private Integer viewCount;
-
+    /*
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int view;
+    */
 
     // 좋아요 수 관리
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -70,17 +76,18 @@ public class Post extends BaseEntity{
     private Goods goods;
 
     @Builder
-    public Post(String title, String content, String postImg, int rating, String hashtag, Member member,
+    public Post(String title, String content, Member member, String postImg, int rating, String hashtag,
                 Movie movie, Cinema cinema, Goods goods) {
         this.title = title;
         this.content = content;
+        this.member = member;
         this.postImg = postImg;
         this.rating = rating;
         this.hashtag = hashtag;
-        this.member = member;
         this.movie = movie;
         this.cinema = cinema;
         this.goods = goods;
+        // this.userId;
     }
 
     // 게시글 내용 업데이트를 위한 메소드
