@@ -1,7 +1,20 @@
 package kuloud.cinecritique.movie.entity;
 
-public enum MovieGenre {
-    SF("공상과학"),
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Data
+@Entity
+@AllArgsConstructor @NoArgsConstructor
+public class MovieGenre {
+    /*SF("공상과학"),
     ROMANCE("로맨스"),
     COMEDY("코미디"),
     HERO("히어로"),
@@ -16,8 +29,12 @@ public enum MovieGenre {
     MYSTERY("미스터리"),
     STORY("일상")
     ;
-
+*/
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private final String name;
+
 
     MovieGenre(String name) {
         this.name = name;

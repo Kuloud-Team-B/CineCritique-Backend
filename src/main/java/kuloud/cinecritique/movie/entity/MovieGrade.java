@@ -1,9 +1,9 @@
 package kuloud.cinecritique.movie.entity;
 
 public enum MovieGrade {
-    GA("전체관람과"),
-    G12("12세 관람과"),
-    G15("15세 관람과"),
+    GA("전체관람가"),
+    G12("12세 관람가"),
+    G15("15세 관람가"),
     G18("청소년 관람불가"),
     RG("제한상영가")
     ;

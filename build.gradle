@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10' // QueryDSL 플러그인
 }
 
 group = 'kuloud'
@@ -21,14 +22,32 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'com.h2database:h2'
-	compileOnly 'org.projectlombok:lombok'
-//	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// H2 데이터베이스
+	implementation 'com.h2database:h2'
+
+	// MySQL 데이터베이스 커넥터
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// QueryDSL
+	implementation 'com.querydsl:querydsl-jpa'
+	implementation 'com.querydsl:querydsl-apt'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// 테스트 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+}
+
+
+// QueryDSL 관련 설정
+querydsl {
+	jpa = true
+	querydslSourcesDir = "src/main/generated"
 }
 
 tasks.named('test') {
