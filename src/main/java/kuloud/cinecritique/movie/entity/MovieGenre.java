@@ -1,18 +1,20 @@
 package kuloud.cinecritique.movie.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+// import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Data
+/*@Data*/
+@Getter
 @Entity
-@AllArgsConstructor @NoArgsConstructor
+/*@AllArgsConstructor @NoArgsConstructor*/
+@NoArgsConstructor
 public class MovieGenre {
     /*SF("공상과학"),
     ROMANCE("로맨스"),
@@ -33,7 +35,7 @@ public class MovieGenre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private final String name;
+    private String name;
 
 
     MovieGenre(String name) {
@@ -43,4 +45,9 @@ public class MovieGenre {
     public String getName() {
         return name;
     }
+
+    @Builder
+    public MovieGenre(Long id, String name) {
+        this.id = id;
+        this.name = name;
 }
