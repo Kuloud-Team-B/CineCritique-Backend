@@ -13,6 +13,15 @@ public enum ErrorCode {
     // authorization
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "접근 권한이 없습니다."),
 
+    // favorite
+    NOT_EXIST_FAVORITE(BAD_REQUEST, "해당 즐겨찾기를 확인할 수 없습니다."),
+
+    // likes
+    NOT_EXIST_LIKES(BAD_REQUEST, "해당 게시글의 좋아요를 확인할 수 없습니다."),
+
+    // post
+    NOT_EXIST_POST(BAD_REQUEST, "해당 게시글이 존재하지 않습니다."),
+
     // goods
     NOT_EXIST_GOODS(BAD_REQUEST, "해당 굿즈가 존재하지 않습니다."),
     DUPLICATED_GOODS_NAME(BAD_REQUEST, "중복된 이름의 굿즈가 존재합니다."),

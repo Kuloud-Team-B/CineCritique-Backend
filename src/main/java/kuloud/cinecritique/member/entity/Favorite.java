@@ -1,7 +1,8 @@
 package kuloud.cinecritique.member.entity;
 
 import jakarta.persistence.*;
-import kuloud.cinecritique.post.entity.Post;
+import kuloud.cinecritique.common.entity.BaseTimeEntity;
+import kuloud.cinecritique.movie.entity.Movie;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,19 +10,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Like {
+public class Favorite extends BaseTimeEntity {
     @Id @GeneratedValue
-    @Column(name = "like_id")
+    @Column(name = "favorite_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "movie_id")
+    private Movie movie;
 
-    public Like(Member member, Post post) {
+    public Favorite(Member member, Movie movie) {
         this.member = member;
-        this.post = post;
+        this.movie = movie;
     }
 }
