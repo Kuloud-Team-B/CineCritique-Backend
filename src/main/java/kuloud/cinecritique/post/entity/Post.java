@@ -12,7 +12,7 @@ import kuloud.cinecritique.common.entity.BaseEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -42,31 +42,18 @@ public class Post extends BaseEntity{
     @Column(nullable = false)
     private int rating;
 
-    // 태그
-    // @Column(length = 40)
-    // private String hashtag;
-    @ToString.Exclude
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "post_hashtag", // 연결 테이블 이름
-            joinColumns = @JoinColumn(name = "post_id"), // Post 엔티티 측의 외래 키
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id") // Hashtag 엔티티 측의 외래 키
-    )
-    private Set<Hashtag> hashtags = new LinkedHashSet<>();
+    // 해시태그: 해시태그 관계를 PostHashtagMap을 통해 관리
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PostHashtagMap> hashtags = new HashSet<>();
 
     // 조회수
     @ColumnDefault("0")
     @Column(name = "view_count",nullable = false)
     private Integer viewCount;
-    /*
-    @Column(columnDefinition = "integer default 0", nullable = false)
-    private int view;
-    */
 
     // 좋아요 수 관리
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
-
 
     @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Member.class)
     @JoinColumn(name = "member_id", updatable = false)
@@ -85,22 +72,20 @@ public class Post extends BaseEntity{
     private Goods goods;
 
     @Builder
-    public Post(String title, String content, Member member, String postImg, int rating, Set<Hashtag> hashtags,
+    public Post(String title, String content, Member member, String postImg, int rating, Set<PostHashtagMap> postHashtagMaps,
                 Movie movie, Cinema cinema, Goods goods) {
         this.title = title;
         this.content = content;
         this.member = member;
         this.postImg = postImg;
         this.rating = rating;
-        this.hashtags = hashtags;
         this.movie = movie;
         this.cinema = cinema;
         this.goods = goods;
-        // this.userId;
     }
 
     // 게시글 내용 업데이트를 위한 메소드
-    public void update(String title, String content, Set<Hashtag> updatedHashtags) {
+    public void update(String title, String content, Set<PostHashtagMap> updatedHashtags) {
         if (title != null && !title.isBlank()) {
             this.title = title;
         }
@@ -111,5 +96,17 @@ public class Post extends BaseEntity{
             this.hashtags.clear();
             this.hashtags.addAll(updatedHashtags);
         }
+    }
+    // 해시태그 추가
+    public void addHashtag(Hashtag hashtag) {
+        PostHashtagMap map = new PostHashtagMap(this, hashtag);
+        this.hashtags.add(map);
+        hashtag.getPosts().add(map);
+    }
+
+    // 해시태그 제거
+    public void removeHashtag(Hashtag hashtag) {
+        this.hashtags.removeIf(map -> map.getHashtag().equals(hashtag));
+        hashtag.getPosts().removeIf(map -> map.getPost().equals(this));
     }
 }

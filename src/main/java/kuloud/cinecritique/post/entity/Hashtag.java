@@ -2,25 +2,27 @@ package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 @Getter
 @NoArgsConstructor
-@Entity
-public class Hashtag extends BaseTimeEntity {
+@AllArgsConstructor
+@Builder
+public class Hashtag extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
-    @Column(nullable = false, unique = true)
     private String hashtag;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "hashtags")
-    private Set<Post> posts = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PostHashtagMap> posts = new HashSet<>();
 }

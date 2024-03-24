@@ -1,7 +1,7 @@
 package kuloud.cinecritique.post.service;
 
 import kuloud.cinecritique.post.dto.PostRequestDto;
-import kuloud.cinecritique.post.entity.Hashtag;
+import kuloud.cinecritique.post.entity.PostHashtagMap;
 import kuloud.cinecritique.post.repository.HashtagRepository;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,27 +59,15 @@ public class PostService {
     }
 
 
-    // 해시태그 처리 로직
-    private Set<Hashtag> processHashtags(String hashtagsString) {
-        Set<Hashtag> hashtags = new HashSet<>();
-        Arrays.stream(hashtagsString.split(" ")).forEach(tag -> {
-            Hashtag hashtag = hashtagRepository.findByHashtag(tag)
-                    .orElseGet(() -> {
-                        Hashtag newHashtag = new Hashtag();
-                        newHashtag.setHashtag(tag);
-                        return hashtagRepository.save(newHashtag);
-                    });
-            hashtags.add(hashtag);
-        });
-        return hashtags;
-    }
 
     @Transactional
     public Long createPost(PostRequestDto postRequestDto, String nickname) {
         Member member = getAuthenticatedMember(nickname);
 
         // 해시태그 처리 로직 호출
-        Set<Hashtag> hashtags = processHashtags(postRequestDto.getHashtag());
+        // 해시태그 처리 로직 호출하여 PostHashtagMap의 Set 반환받기
+        Set<PostHashtagMap> postHashtagMaps = processHashtags(postRequestDto.getHashtag());
+
 
         // Movie, Cinema, Goods 외래 키 엔티티 조회
         Movie movie = movieRepository.findById(postRequestDto.getMovieId())
@@ -96,7 +83,7 @@ public class PostService {
                 .member(member)
                 .postImg(postRequestDto.getPostImg())
                 .rating(postRequestDto.getRating())
-                .hashtags(hashtags)
+                .postHashtagMaps(postHashtagMaps)
                 .movie(movie)
                 .cinema(cinema)
                 .goods(goods)
@@ -106,6 +93,13 @@ public class PostService {
         return post.getId();
     }
 
+    private Set<PostHashtagMap> processHashtags(String hashtag) {
+        Set<PostHashtagMap> postHashtagMaps = new HashSet<>();
+        // 해시태그 문자열을 파싱하여 각 해시태그에 대한 PostHashtagMap 객체를 생성
+        // 예시 로직이며, 실제 구현에서는 문자열을 분리하고, 각 해시태그에 대한 Hashtag 엔티티를 조회하거나 생성한 뒤 PostHashtagMap을 생성해야 함
+        return postHashtagMaps;
+    }
+
     @Transactional
     public void updatePost(Long postId, PostRequestDto postRequestDto, String nickname) {
         Post post = postRepository.findById(postId)
@@ -113,7 +107,7 @@ public class PostService {
         verifyPostOwner(post, nickname);
 
         // 해시태그 처리 로직 호출
-        Set<Hashtag> hashtags = processHashtags(postRequestDto.getHashtag());
+        Set<PostHashtagMap> hashtags = processHashtags(postRequestDto.getHashtag());
 
         post.update(postRequestDto.getTitle(), postRequestDto.getContent(), hashtags);
         postRepository.save(post);

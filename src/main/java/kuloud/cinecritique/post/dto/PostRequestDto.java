@@ -5,7 +5,6 @@ import lombok.Getter;
 
 public class PostRequestDto {
 
-    // Getters
     @Getter
     @NotBlank(message = "제목을 입력해주세요.")
     private final String title;
