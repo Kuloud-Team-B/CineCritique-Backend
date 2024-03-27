@@ -21,8 +21,13 @@ public class Hashtag extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String hashtag;
+    private String tagName;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PostHashtagMap> posts = new HashSet<>();
+
+    public Hashtag(String tagName) {
+        // 문자열 태그 이름만을 매개변수로 받는 생성자 추가
+            this.tagName = tagName;
+    }
 }

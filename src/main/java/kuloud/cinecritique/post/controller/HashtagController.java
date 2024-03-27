@@ -24,7 +24,7 @@ public class HashtagController {
     public ResponseEntity<List<String>> autocompleteHashtags(@RequestParam String query) {
         List<Hashtag> hashtags = hashtagRepository.findByHashtagContaining(query);
         List<String> hashtagNames = hashtags.stream()
-                .map(Hashtag::getHashtag)
+                .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(hashtagNames);
     }

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
     // 사용자 정의 쿼리 메소드
-    Optional<Hashtag> findByHashtag(String hashtag);
+    Optional<Hashtag> findByTagName(String tagName);
     List<Hashtag> findByHashtagContaining(String query);
 }
