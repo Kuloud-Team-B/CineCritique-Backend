@@ -3,6 +3,7 @@ package kuloud.cinecritique.member.service;
 import kuloud.cinecritique.common.exception.CustomException;
 import kuloud.cinecritique.common.exception.ErrorCode;
 import kuloud.cinecritique.member.dto.AdminPostDto;
+import kuloud.cinecritique.member.dto.BasicAdminDto;
 import kuloud.cinecritique.member.dto.LoginDto;
 import kuloud.cinecritique.member.entity.Admin;
 import kuloud.cinecritique.member.repository.AdminRepository;
@@ -22,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService implements UserDetailsService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
-    @Value("${admin.account}")
-    private String basicAccount;
-    @Value("${admin.password}")
-    private String basicPassword;
 
     @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void addBasicAdminAccount() {
-        Admin basicAdmin = new Admin(basicAccount, basicPassword);
-        adminRepository.save(basicAdmin);
+        BasicAdminDto dto = new BasicAdminDto();
+        adminRepository.save(new Admin(dto.getBasicAccount(), dto.getBasicPassword()));
     }
 
     public void signIn(LoginDto loginDto) {
