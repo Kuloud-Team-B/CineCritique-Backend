@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
 import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.post.entity.Post;
-import lombok.Getter;
-import lombok.Builder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
