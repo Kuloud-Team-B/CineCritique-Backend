@@ -8,7 +8,6 @@ import kuloud.cinecritique.member.dto.LoginDto;
 import kuloud.cinecritique.member.entity.Admin;
 import kuloud.cinecritique.member.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.userdetails.UserDetails;

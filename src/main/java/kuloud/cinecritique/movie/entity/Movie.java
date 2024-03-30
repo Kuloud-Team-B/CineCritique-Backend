@@ -23,6 +23,7 @@ public class Movie extends BaseTimeEntity {
     private MovieGrade grade;
     @Enumerated(value = EnumType.STRING)
     private MovieGenre genre;
+    private double averageRating;
 
     public Movie(String name, String titleImg, LocalDate releasedDate, String summary, MovieGrade grade, MovieGenre genre) {
         this.name = name;
@@ -31,6 +32,7 @@ public class Movie extends BaseTimeEntity {
         this.summary = summary;
         this.grade = grade;
         this.genre = genre;
+        averageRating = 0;
     }
 
     public void changeName(String name) {
@@ -55,6 +57,10 @@ public class Movie extends BaseTimeEntity {
 
     public void changeGenre(MovieGenre genre) {
         this.genre = genre;
+    }
+
+    public void updateAverageRating(double rating) {
+        this.averageRating = rating;
     }
 
 }
