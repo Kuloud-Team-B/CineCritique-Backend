@@ -2,7 +2,6 @@ package kuloud.cinecritique.member.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
-import kuloud.cinecritique.member.dto.LikesDto;
 import kuloud.cinecritique.post.entity.Post;
 import lombok.AccessLevel;
 import lombok.Getter;

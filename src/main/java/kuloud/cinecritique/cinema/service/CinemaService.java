@@ -20,6 +20,7 @@ public class CinemaService {
     private final CinemaRepository cinemaRepository;
     private final CompanyRepository companyRepository;
 
+    @Transactional
     public void saveCinema(CinemaPostDto cinemaPostDto) {
         Cinema cinema = cinemaPostDto.toEntity();
 
@@ -37,20 +38,18 @@ public class CinemaService {
         return new CinemaDto(cinema);
     }
 
+    @Transactional
     public void updateCinema(CinemaUpdateDto cinemaUpdateDto) {
         Cinema cinema = cinemaRepository.findByName(cinemaUpdateDto.getBeforeName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_CINEMA));
 
-        checkNameIsDuplicated(cinemaUpdateDto.getName());
-        cinema.updateInfo(cinemaUpdateDto);
-        if (!cinema.getCompany().getName().equals(cinemaUpdateDto.getCompany()) &&
-                !cinemaUpdateDto.getCompany().isBlank()) {
-            Company company = companyRepository.findByName(cinemaUpdateDto.getCompany())
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_COMPANY));
-            cinema.setCompany(company);
+        if (!cinemaUpdateDto.getBeforeName().equals(cinemaUpdateDto.getName())) {
+            checkNameIsDuplicated(cinemaUpdateDto.getName());
         }
+        cinema.updateInfo(cinemaUpdateDto);
     }
 
+    @Transactional
     public void deleteCinema(String name) {
         Cinema cinema = cinemaRepository.findByName(name)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_CINEMA));
