@@ -1,10 +1,10 @@
 package kuloud.cinecritique.post.service;
 
+import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.member.repository.MemberRepository;
 import kuloud.cinecritique.post.dto.PostRequestDto;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
-import kuloud.cinecritique.member.repository.MemberRepository;
-import kuloud.cinecritique.member.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

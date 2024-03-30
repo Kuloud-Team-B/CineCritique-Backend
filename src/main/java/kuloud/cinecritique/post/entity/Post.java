@@ -2,15 +2,20 @@ package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kuloud.cinecritique.cinema.entity.Cinema;
+import kuloud.cinecritique.common.entity.BaseEntity;
+import kuloud.cinecritique.goods.entity.Goods;
+import kuloud.cinecritique.member.entity.Likes;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.movie.entity.Movie;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import kuloud.cinecritique.common.entity.BaseEntity;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -50,7 +55,7 @@ public class Post extends BaseEntity{
 
     // 좋아요 수 관리
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private List<Likes> likes = new ArrayList<>();
 
 
     @ManyToOne(cascade = CascadeType.MERGE, targetEntity = Member.class)
