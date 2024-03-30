@@ -1,10 +1,12 @@
 package kuloud.cinecritique.post.controller;
 
 import kuloud.cinecritique.post.dto.PostRequestDto;
+import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.entity.PostHashtagMap;
 import kuloud.cinecritique.post.service.PostHashtagMapService;
 import kuloud.cinecritique.post.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,5 +44,12 @@ public class PostApiController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         postService.deletePost(id, postRequestDto, username);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Post>> getPosts(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size) {
+        Page<Post> posts = postService.getPosts(page, size);
+        return ResponseEntity.ok(posts);
     }
 }

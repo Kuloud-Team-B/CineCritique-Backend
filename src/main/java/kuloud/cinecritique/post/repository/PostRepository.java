@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+    Page<Post> findAll(Pageable pageable);
+
     // 사용자 정의 쿼리 메소드
     Optional<Post> findByTitle(@NotBlank(message = "제목을 입력해주세요.") String title);
 
