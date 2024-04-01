@@ -1,57 +1,56 @@
 package kuloud.cinecritique.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import kuloud.cinecritique.comment.dto.CommentResponseDto;
+import kuloud.cinecritique.member.dto.MemberDto;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostResponseDto {
+    private Long id;
+    private String title;
+    private String hashTag;
+    private String content;
+    private Integer likeCount;
+    private Integer viewCount;
+    private Integer commentCount;
+    private MemberDto memberDto;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private List<CommentResponseDto> commentResponseDto;
 
-    private final Long id;
-    private final String title;
-    private final String content;
-    private final Long memberId;
-    private final String authorNickname;
-    private final String postImg;
-    private final int rating;
-    private final String hashtag;
-
-    public PostResponseDto(Long id, String title, String content, Long memberId, String authorNickname, String postImg, int rating, String hashtag) {
+    @Builder
+    public PostResponseDto(Long id, String title, String hashTag, String content, Integer likeCount, Integer viewCount, 
+                           Integer commentCount, MemberDto memberDto, List<CommentResponseDto> commentResponseDto,
+                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
+        this.hashTag = hashTag;
         this.content = content;
-        this.memberId = memberId;
-        this.authorNickname = authorNickname;
-        this.postImg = postImg;
-        this.rating = rating;
-        this.hashtag = hashtag;
+        this.likeCount = likeCount;
+        this.viewCount = viewCount;
+        this.commentCount = commentCount;
+        this.memberDto = memberDto;
+        this.commentResponseDto = commentResponseDto;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    // Getters
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public String getAuthorNickname() {
-        return authorNickname;
-    }
-
-    public String getPostImg() {
-        return postImg;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public String getHashtag() {
-        return hashtag;
+    @Builder
+    public PostResponseDto(Long id, String title, String hashTag, String content, Integer likeCount,
+                            Integer viewCount, Integer commentCount, MemberDto memberDto) {
+        this.id = id;
+        this.title = title;
+        this.hashTag = hashTag;
+        this.content = content;
+        this.likeCount = likeCount;
+        this.viewCount = viewCount;
+        this.commentCount = commentCount;
+        this.memberDto = memberDto;
     }
 }
