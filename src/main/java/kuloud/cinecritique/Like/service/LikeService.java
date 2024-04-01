@@ -1,20 +1,14 @@
-package kuloud.cinecritique.post.service;
+package kuloud.cinecritique.Like.service;
 
-import kuloud.cinecritique.post.dto.LikeResponseDto;
-import kuloud.cinecritique.post.entity.Like;
-import kuloud.cinecritique.post.repository.LikeRepository;
+import kuloud.cinecritique.Like.entity.Like;
+import kuloud.cinecritique.Like.repository.LikeRepository;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
 import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Optional;
 
@@ -30,9 +24,9 @@ public class LikeService {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
     }
-    
+
     @Transactional
-    public void toggleLike(Long postId, Long memberId) {
+    public boolean toggleLike(Long postId, Long memberId) {
         Optional<Like> like = likeRepository.findByPostIdAndMemberId(postId, memberId);
         if (like.isPresent()) {
             likeRepository.delete(like.get());
@@ -42,18 +36,6 @@ public class LikeService {
             Like newLike = new Like(post, member);
             likeRepository.save(newLike);
         }
+        return false;
     }
-    @PostMapping("/{postId}/like")
-    public ResponseEntity<LikeResponseDto> toggleLike(@PathVariable Long postId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long memberId = ((kuloud.cinecritique.member.entity.Member) authentication.getPrincipal()).getId();
-
-        boolean likeStatus = likeService.toggleLike(postId, memberId);
-        String message = likeStatus ? "좋아요를 추가했습니다." : "좋아요를 취소했습니다.";
-
-        LikeResponseDto responseDto = new LikeResponseDto(message, likeStatus);
-
-        return ResponseEntity.ok(responseDto);
-    }
-
 }

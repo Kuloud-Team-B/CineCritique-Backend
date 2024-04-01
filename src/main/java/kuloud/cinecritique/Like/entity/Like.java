@@ -1,7 +1,8 @@
-package kuloud.cinecritique.post.entity;
+package kuloud.cinecritique.Like.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.post.entity.Post;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
