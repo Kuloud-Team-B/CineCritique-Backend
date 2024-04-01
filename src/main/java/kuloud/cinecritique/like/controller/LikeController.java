@@ -2,12 +2,14 @@ package kuloud.cinecritique.like.controller;
 
 import kuloud.cinecritique.like.service.LikeService;
 import kuloud.cinecritique.member.entity.Member;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j // 로그 확인용
 @RestController
 @RequestMapping("/likes")
 public class LikeController {
