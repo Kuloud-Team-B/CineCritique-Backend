@@ -1,4 +1,4 @@
-package kuloud.cinecritique.Like.entity;
+package kuloud.cinecritique.like.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.member.entity.Member;

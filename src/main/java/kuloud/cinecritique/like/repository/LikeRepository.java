@@ -1,6 +1,6 @@
-package kuloud.cinecritique.Like.repository;
+package kuloud.cinecritique.like.repository;
 
-import kuloud.cinecritique.Like.entity.Like;
+import kuloud.cinecritique.like.entity.Like;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

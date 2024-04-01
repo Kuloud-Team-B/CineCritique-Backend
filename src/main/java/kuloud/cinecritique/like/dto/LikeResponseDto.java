@@ -1,4 +1,4 @@
-package kuloud.cinecritique.Like.dto;
+package kuloud.cinecritique.like.dto;
 
 import lombok.Builder;
 import lombok.Getter;

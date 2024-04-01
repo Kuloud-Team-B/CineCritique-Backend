@@ -1,6 +1,6 @@
-package kuloud.cinecritique.Like.controller;
+package kuloud.cinecritique.like.controller;
 
-import kuloud.cinecritique.Like.service.LikeService;
+import kuloud.cinecritique.like.service.LikeService;
 import kuloud.cinecritique.member.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

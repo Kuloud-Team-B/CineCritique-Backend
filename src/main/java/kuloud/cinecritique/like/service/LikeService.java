@@ -1,7 +1,7 @@
-package kuloud.cinecritique.Like.service;
+package kuloud.cinecritique.like.service;
 
-import kuloud.cinecritique.Like.entity.Like;
-import kuloud.cinecritique.Like.repository.LikeRepository;
+import kuloud.cinecritique.like.entity.Like;
+import kuloud.cinecritique.like.repository.LikeRepository;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.repository.PostRepository;
 import kuloud.cinecritique.member.entity.Member;
