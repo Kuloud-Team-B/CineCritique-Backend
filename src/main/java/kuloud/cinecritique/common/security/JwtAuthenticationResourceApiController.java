@@ -4,7 +4,6 @@ import jakarta.annotation.security.PermitAll;
 import kuloud.cinecritique.common.entity.JwtResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class JwtAuthenticationResourceApiController {
-    private final JwtTokenProvider jwtTokenProvider;
-
-    @PostMapping("/authenticate")
-    @PermitAll
-    public JwtResponse authenticate(Authentication authentication) {
-        return new JwtResponse(jwtTokenProvider.createTokenWithAuthentication(authentication));
-    }
+    private final JwtTokenUtil jwtTokenUtil;
+//
+//    @PostMapping("/authenticate")
+//    @PermitAll
+//    public JwtResponse authenticate(Authentication authentication) {
+//        return new JwtResponse(jwtTokenUtil.createTokenWithAuthentication(authentication));
+//    }
 
 }

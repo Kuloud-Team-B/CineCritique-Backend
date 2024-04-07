@@ -26,8 +26,8 @@ public class LikesService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void saveLikes(String userEmail, LikesPostDto dto) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public void saveLikes(Long userId, LikesPostDto dto) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         Post post = postRepository.findById(dto.getPostId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_POST));
@@ -36,8 +36,8 @@ public class LikesService {
         likesRepository.save(likes);
     }
 
-    public List<LikesDto> getMyLikes(String userEmail) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public List<LikesDto> getMyLikes(Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         List<Likes> findsByMember = likesRepository.findByMember(member);
@@ -45,8 +45,8 @@ public class LikesService {
     }
 
     @Transactional
-    public void deleteLikes(String userEmail, LikesDeleteDto dto) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public void deleteLikes(Long userId, LikesDeleteDto dto) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         Likes likes = likesRepository.findById(dto.getLikesId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_LIKES));

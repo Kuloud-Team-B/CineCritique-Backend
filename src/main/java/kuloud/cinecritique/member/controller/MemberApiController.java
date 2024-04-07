@@ -4,26 +4,26 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import kuloud.cinecritique.common.entity.JwtResponse;
-import kuloud.cinecritique.common.security.JwtTokenProvider;
-import kuloud.cinecritique.member.dto.LoginDto;
-import kuloud.cinecritique.member.dto.MemberDto;
-import kuloud.cinecritique.member.dto.MemberPostDto;
-import kuloud.cinecritique.member.dto.MyPageDto;
+import kuloud.cinecritique.common.security.JwtTokenUtil;
+import kuloud.cinecritique.member.dto.*;
+import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/member")
 public class MemberApiController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @PermitAll
     @GetMapping("/sign-in")
@@ -31,8 +31,8 @@ public class MemberApiController {
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
 
-        memberService.signIn(email, password);
-        return new JwtResponse(jwtTokenProvider.createTokenWithEmail(email));
+        MemberData memberData = memberService.signIn(email, password);
+        return new JwtResponse(jwtTokenUtil.createTokenWithMemberData(memberData));
     }
 
     @PostMapping("/sign-up")
@@ -41,6 +41,7 @@ public class MemberApiController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{nickname}")
     public ResponseEntity<MemberDto> getMemberInfo(@PathVariable String nickname) {
         MemberDto result = memberService.getMemberInformation(nickname);
@@ -59,35 +60,33 @@ public class MemberApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/memberList")
     public ResponseEntity<List<MyPageDto>> getMemberList() {
         List<MyPageDto> result = memberService.getMemberList();
         return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/my-page")
-    public ResponseEntity<MyPageDto> getMyPageInfo() {
-        MyPageDto result = memberService.getMyPageInfo(getEmailFromToken());
+    public ResponseEntity<MyPageDto> getMyPageInfo(Authentication authentication) {
+        MyPageDto result = memberService.getMyPageInfo(getCurrentMemberId(authentication));
         return ResponseEntity.ok(result);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping
-    public ResponseEntity<Void> updateMember(@RequestBody MemberPostDto memberPostDto) {
-        memberService.updateMemberInfo(memberPostDto, getEmailFromToken());
+    public ResponseEntity<Void> updateMember(@RequestBody MemberPostDto memberPostDto, Authentication authentication) {
+        memberService.updateMemberInfo(memberPostDto, getCurrentMemberId(authentication));
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteMember() {
-        memberService.deleteMember(getEmailFromToken());
+    public ResponseEntity<Void> deleteMember(Authentication authentication) {
+        memberService.deleteMember(getCurrentMemberId(authentication));
         return ResponseEntity.noContent().build();
     }
 
-    private String getEmailFromToken() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+    private Long getCurrentMemberId(Authentication authentication) {
+        return ((Member) authentication.getPrincipal()).getId();
     }
 }

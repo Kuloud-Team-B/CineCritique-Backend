@@ -26,8 +26,8 @@ public class FavoriteService {
     private final MovieRepository movieRepository;
 
     @Transactional
-    public void saveFavorite(String userEmail, FavoritePostDto dto) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public void saveFavorite(Long userId, FavoritePostDto dto) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         Movie movie = movieRepository.findByName(dto.getMovieName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MOVIE));
@@ -36,8 +36,8 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteDto> getMyFavorites(String userEmail) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public List<FavoriteDto> getMyFavorites(Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         List<Favorite> findsByMember = favoriteRepository.findByMember(member);
@@ -45,8 +45,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(String userEmail, FavoriteDeleteDto dto) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public void deleteFavorite(Long userId, FavoriteDeleteDto dto) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         Favorite favorite = favoriteRepository.findById(dto.getFavoriteId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_FAVORITE));
