@@ -20,6 +20,7 @@ public class GoodsService {
     private final GoodsRepository goodsRepository;
     private final MovieRepository movieRepository;
 
+    @Transactional
     public void saveGoods(GoodsPostDto dto) {
         Goods goods = dto.toEntity();
 
@@ -36,19 +37,23 @@ public class GoodsService {
         return new GoodsDto(goods);
     }
 
+    @Transactional
     public void updateGoods(GoodsUpdateDto dto) {
         Goods goods = goodsRepository.findByName(dto.getBeforeName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_GOODS));
 
-        checkNameIsDuplicated(goods.getName());
-        if (!dto.getMovieName().equals(goods.getMovie().getName()) &&
-                !dto.getMovieName().isBlank()) {
+        if (dto.getName() != null) {
+            checkNameIsDuplicated(goods.getName());
+        }
+        if (dto.getMovieName() != null) {
             Movie movie = movieRepository.findByName(dto.getMovieName())
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MOVIE));
             goods.setMovie(movie);
         }
+        goods.updateInfo(dto);
     }
 
+    @Transactional
     public void deleteGoods(String name) {
         Goods goods = goodsRepository.findByName(name)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_GOODS));

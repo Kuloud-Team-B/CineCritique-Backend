@@ -39,14 +39,14 @@ public class CinemaService {
     }
 
     @Transactional
-    public void updateCinema(CinemaUpdateDto cinemaUpdateDto) {
-        Cinema cinema = cinemaRepository.findByName(cinemaUpdateDto.getBeforeName())
+    public void updateCinema(CinemaUpdateDto dto) {
+        Cinema cinema = cinemaRepository.findByName(dto.getBeforeName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_CINEMA));
 
-        if (!cinemaUpdateDto.getBeforeName().equals(cinemaUpdateDto.getName())) {
-            checkNameIsDuplicated(cinemaUpdateDto.getName());
+        if (dto.getName() != null) {
+            checkNameIsDuplicated(dto.getName());
         }
-        cinema.updateInfo(cinemaUpdateDto);
+        cinema.updateInfo(dto);
     }
 
     @Transactional

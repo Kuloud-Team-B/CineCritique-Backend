@@ -44,12 +44,14 @@ public class CompanyService {
     }
 
     @Transactional
-    public void updateCompany(CompanyUpdateDto companyUpdateDto) {
-        Company company = companyRepository.findByName(companyUpdateDto.getBeforeCompanyName())
+    public void updateCompany(CompanyUpdateDto dto) {
+        Company company = companyRepository.findByName(dto.getBeforeCompanyName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_COMPANY));
 
-        checkNameIsDuplicated(companyUpdateDto.getCompanyName());
-        company.updateInfo(companyUpdateDto);
+        if (dto.getCompanyName() != null) {
+            checkNameIsDuplicated(dto.getCompanyName());
+        }
+        company.updateInfo(dto);
     }
 
     @Transactional
