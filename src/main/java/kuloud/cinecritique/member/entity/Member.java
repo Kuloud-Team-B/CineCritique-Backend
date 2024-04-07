@@ -28,7 +28,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     private String nickname;
     private String email;
     private String password;
-    private String profileImage;
 
     public void changeNickName(String nickname) {
         this.nickname = nickname;
@@ -42,16 +41,11 @@ public class Member extends BaseTimeEntity implements UserDetails {
         this.email = email;
     }
 
-    public void changeProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
     @Builder
-    public Member(String nickname, String email, String password, String profileImage) {
+    public Member(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.profileImage = profileImage;
     }
 
     @Override

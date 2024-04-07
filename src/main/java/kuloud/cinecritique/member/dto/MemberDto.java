@@ -9,10 +9,8 @@ import lombok.Setter;
 @Setter
 public class MemberDto {
     private String nickname;
-    private String profileImg;
 
     public MemberDto(Member member) {
         this.nickname = member.getNickname();
-        this.profileImg = member.getProfileImage();
     }
 }

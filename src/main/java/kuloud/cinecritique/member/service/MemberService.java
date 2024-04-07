@@ -71,7 +71,6 @@ public class MemberService {
             checkEmailIsDuplicated(updateMember.getEmail());
             member.changeEmail(updateMember.getEmail());
         }
-        member.changeProfileImage(updateMember.getProfileImage());
         member.changePassword(updateMember.getPassword());
     }
 

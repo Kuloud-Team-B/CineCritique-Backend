@@ -9,10 +9,14 @@ import kuloud.cinecritique.movie.entity.Movie;
 import kuloud.cinecritique.movie.entity.MovieGenre;
 import kuloud.cinecritique.movie.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,19 +31,14 @@ public class MovieService {
     }
 
     @Transactional
-    public void updateMovie(MovieUpdateDto movieUpdateDto) {
-        Movie findMovie = movieRepository.findByName(movieUpdateDto.getBeforeName())
+    public void updateMovie(MovieUpdateDto dto) {
+        Movie findMovie = movieRepository.findByName(dto.getBeforeName())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MOVIE));
 
-        if (!findMovie.getName().equals(movieUpdateDto.getName())) {
-            checkNameIsDuplicated(movieUpdateDto.getName());
-            findMovie.changeName(movieUpdateDto.getName());
+        if (dto.getName() != null) {
+            checkNameIsDuplicated(dto.getName());
         }
-        findMovie.changeTitleImg(movieUpdateDto.getTitleImg());
-        findMovie.changeReleasedDate(movieUpdateDto.getReleasedDate());
-        findMovie.changeSummary(movieUpdateDto.getSummary());
-        findMovie.changeGrade(movieUpdateDto.getGrade());
-        findMovie.changeGenre(movieUpdateDto.getGenre());
+        findMovie.updateInfo(dto);
     }
 
     public MovieDto getMovieWithName(String name) {
@@ -63,13 +62,13 @@ public class MovieService {
         return findMovies.stream().map(MovieDto::new).toList();
     }
 
-    public List<MovieDto> getAllMovie() {
-        List<Movie> findMovies = movieRepository.findAll();
+    public Page<MovieDto> getAllMovie(MovieGenre genre, Pageable pageable) {
+        Page<Movie> findMovies = movieRepository.findAllByGenre(genre, pageable);
 
         if (findMovies.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_EXIST_MOVIE);
         }
-        return findMovies.stream().map(MovieDto::new).toList();
+        return findMovies.map(MovieDto::new);
     }
 
     @Transactional

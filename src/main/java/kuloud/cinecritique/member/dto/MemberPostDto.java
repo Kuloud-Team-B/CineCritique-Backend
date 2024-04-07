@@ -17,14 +17,12 @@ public class MemberPostDto {
     private String email;
     @Size(min = 8, max = 32)
     private String password;
-    private String profileImage;
 
     public Member toEntityWithEncoder(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .nickname(nickname)
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .profileImage(profileImage)
                 .build();
     }
 

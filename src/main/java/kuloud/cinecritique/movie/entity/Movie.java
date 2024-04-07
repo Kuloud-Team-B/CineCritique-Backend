@@ -2,6 +2,7 @@ package kuloud.cinecritique.movie.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
+import kuloud.cinecritique.movie.dto.MovieUpdateDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,28 +36,25 @@ public class Movie extends BaseTimeEntity {
         averageRating = 0;
     }
 
-    public void changeName(String name) {
-        this.name = name;
-    }
-
-    public void changeTitleImg(String titleImg) {
-        this.titleImg = titleImg;
-    }
-
-    public void changeReleasedDate(LocalDate releasedDate) {
-        this.releasedDate = releasedDate;
-    }
-
-    public void changeSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public void changeGrade(MovieGrade grade) {
-        this.grade = grade;
-    }
-
-    public void changeGenre(MovieGenre genre) {
-        this.genre = genre;
+    public void updateInfo(MovieUpdateDto dto) {
+        if (dto.getName() != null) {
+            name = dto.getName();
+        }
+        if (dto.getTitleImg() != null) {
+            titleImg = dto.getTitleImg();
+        }
+        if (dto.getReleasedDate() != null) {
+            releasedDate = dto.getReleasedDate();
+        }
+        if (dto.getSummary() != null) {
+            summary = dto.getSummary();
+        }
+        if (dto.getGrade() != null) {
+            grade = dto.getGrade();
+        }
+        if (dto.getGenre() != null) {
+            genre = dto.getGenre();
+        }
     }
 
     public void updateAverageRating(double rating) {

@@ -6,6 +6,8 @@ import kuloud.cinecritique.movie.dto.MovieUpdateDto;
 import kuloud.cinecritique.movie.entity.MovieGenre;
 import kuloud.cinecritique.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,8 @@ public class MovieApiController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<List<MovieDto>> getAllMovie() {
-        List<MovieDto> result = movieService.getAllMovie();
+    public ResponseEntity<Page<MovieDto>> getAllMovie(@RequestParam MovieGenre genre, Pageable pageable) {
+        Page<MovieDto> result = movieService.getAllMovie(genre, pageable);
         return ResponseEntity.ok(result);
     }
 

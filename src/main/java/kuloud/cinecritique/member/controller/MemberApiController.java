@@ -71,7 +71,6 @@ public class MemberApiController {
         return ResponseEntity.ok(result);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PatchMapping
     public ResponseEntity<Void> updateMember(@RequestBody MemberPostDto memberPostDto, Authentication authentication) {
         memberService.updateMemberInfo(memberPostDto, getCurrentMemberId(authentication));
