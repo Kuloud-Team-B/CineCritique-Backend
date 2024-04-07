@@ -13,15 +13,15 @@ public class Cinema {
     @Id @GeneratedValue
     @Column(name = "cinema_id")
     private Long id;
-    private String location;
     private String name;
+    private String location;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 
-    public Cinema(String location, String name) {
-        this.location = location;
+    public Cinema(String name, String location) {
         this.name = name;
+        this.location = location;
     }
 
     public void setCompany(Company company) {
@@ -29,10 +29,10 @@ public class Cinema {
     }
 
     public void updateInfo(CinemaUpdateDto dto) {
-        if (!dto.getName().isBlank() && !dto.getName().equals(name)) {
+        if (dto.getName() != null) {
             name = dto.getName();
         }
-        if (!dto.getLocation().isBlank() && !dto.getLocation().equals(name)) {
+        if (dto.getLocation() != null) {
             location = dto.getLocation();
         }
     }

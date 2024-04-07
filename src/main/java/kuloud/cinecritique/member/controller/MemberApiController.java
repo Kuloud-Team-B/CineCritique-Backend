@@ -1,6 +1,5 @@
 package kuloud.cinecritique.member.controller;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import kuloud.cinecritique.common.entity.JwtResponse;

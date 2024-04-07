@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CinemaPostDto {
-    private String location;
     private String name;
+    private String location;
     private String company;
 
     public Cinema toEntity() {
-        return new Cinema(location, name);
+        return new Cinema(name, location);
     }
 }
