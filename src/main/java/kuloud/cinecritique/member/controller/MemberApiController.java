@@ -25,7 +25,6 @@ public class MemberApiController {
     private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
 
-    @PermitAll
     @GetMapping("/sign-in")
     public JwtResponse authenticate(@RequestBody LoginDto loginDto) {
         String email = loginDto.getEmail();

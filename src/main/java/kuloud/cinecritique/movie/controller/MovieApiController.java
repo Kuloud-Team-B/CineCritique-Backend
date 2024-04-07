@@ -37,18 +37,21 @@ public class MovieApiController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> postMovie(@RequestBody MoviePostDto moviePostDto) {
         movieService.saveMovie(moviePostDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> updateMovie(@RequestBody MovieUpdateDto movieUpdateDto) {
         movieService.updateMovie(movieUpdateDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<Void> deleteMovie(@RequestParam String name) {
         movieService.deleteMovie(name);
