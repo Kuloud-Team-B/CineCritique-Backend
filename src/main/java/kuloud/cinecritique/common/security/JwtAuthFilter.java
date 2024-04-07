@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kuloud.cinecritique.member.service.AdminService;
 import kuloud.cinecritique.member.service.MemberDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final MemberDetailService memberDetailService;
+    private final AdminService adminService;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Override
@@ -28,12 +30,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
 
             if (jwtTokenUtil.validateToken(token)) {
-                UserDetails userDetails = memberDetailService.loadUserByUsername(jwtTokenUtil.getMemberId(token));
+                if (jwtTokenUtil.isAdminToken(token)) {
+                    UserDetails userDetails = adminService.loadUserByUsername(jwtTokenUtil.getAdminName(token));
 
-                if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    }
+                } else {
+                    UserDetails userDetails = memberDetailService.loadUserByUsername(jwtTokenUtil.getMemberId(token));
+
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    }
                 }
             }
         }

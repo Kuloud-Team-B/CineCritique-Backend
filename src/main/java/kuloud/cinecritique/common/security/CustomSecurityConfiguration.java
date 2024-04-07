@@ -1,5 +1,6 @@
 package kuloud.cinecritique.common.security;
 
+import kuloud.cinecritique.member.service.AdminService;
 import kuloud.cinecritique.member.service.MemberDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class CustomSecurityConfiguration {
     private final MemberDetailService memberDetailService;
+    private final AdminService adminService;
     private final JwtTokenUtil jwtTokenUtil;
 
     private static final String[] WHITELIST = {
@@ -32,7 +34,7 @@ public class CustomSecurityConfiguration {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
-        http.addFilterBefore(new JwtAuthFilter(memberDetailService, jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(memberDetailService, adminService, jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(WHITELIST).permitAll()

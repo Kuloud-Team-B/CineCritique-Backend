@@ -2,6 +2,7 @@ package kuloud.cinecritique.common.security;
 
 import kuloud.cinecritique.common.exception.CustomException;
 import kuloud.cinecritique.common.exception.ErrorCode;
+import kuloud.cinecritique.member.dto.AdminLoginDto;
 import kuloud.cinecritique.member.dto.MemberData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,28 @@ public class JwtTokenUtil {
                 .build());
     }
 
+    public String createAdminToken(AdminLoginDto dto) {
+        return jwtEncoder.encode(
+                JwtEncoderParameters.from(JwtClaimsSet.builder()
+                        .issuer("self")
+                        .issuedAt(Instant.now())
+                        .expiresAt(Instant.now().plusSeconds(EXPIRES_LIMIT))
+                        .claim("role", "ADMIN")
+                        .claim("name", dto.getName())
+                        .build())
+        ).getTokenValue();
+    }
+
+    public boolean isAdminToken(String token) {
+        return parseClaims(token).getClaim("role").equals("ADMIN");
+    }
+
     public String getMemberId(String token) {
         return parseClaims(token).getClaim("memberId");
+    }
+
+    public String getAdminName(String token) {
+        return parseClaims(token).getClaim("name");
     }
 
     public boolean validateToken(String token) {

@@ -7,6 +7,7 @@ import kuloud.cinecritique.movie.entity.MovieGenre;
 import kuloud.cinecritique.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class MovieApiController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<MovieDto>> getAllMovie() {
         List<MovieDto> result = movieService.getAllMovie();
