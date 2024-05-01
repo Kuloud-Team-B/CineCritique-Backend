@@ -6,6 +6,7 @@ import kuloud.cinecritique.cinema.dto.CinemaUpdateDto;
 import kuloud.cinecritique.cinema.service.CinemaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,18 +21,21 @@ public class CinemaApiController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> postCinema(@RequestBody CinemaPostDto cinemaPostDto) {
         cinemaService.saveCinema(cinemaPostDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> updateCinema(@RequestBody CinemaUpdateDto cinemaUpdateDto) {
         cinemaService.updateCinema(cinemaUpdateDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<Void> deleteCinema(@RequestParam String name) {
         cinemaService.deleteCinema(name);

@@ -2,6 +2,7 @@ package kuloud.cinecritique.member.service;
 
 import kuloud.cinecritique.common.exception.CustomException;
 import kuloud.cinecritique.common.exception.ErrorCode;
+import kuloud.cinecritique.member.dto.MemberData;
 import kuloud.cinecritique.member.dto.MemberDto;
 import kuloud.cinecritique.member.dto.MemberPostDto;
 import kuloud.cinecritique.member.dto.MyPageDto;
@@ -21,13 +22,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void signIn(String email, String password) {
+    public MemberData signIn(String email, String password) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_LOGIN);
         }
+        return new MemberData(member);
     }
 
     @Transactional
@@ -56,8 +58,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(MemberPostDto memberPostDto, String userEmail) {
-        Member member = memberRepository.findByEmail(userEmail)
+    public void updateMemberInfo(MemberPostDto memberPostDto, Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         Member updateMember = memberPostDto.toEntityWithEncoder(passwordEncoder);
 
@@ -69,7 +71,6 @@ public class MemberService {
             checkEmailIsDuplicated(updateMember.getEmail());
             member.changeEmail(updateMember.getEmail());
         }
-        member.changeProfileImage(updateMember.getProfileImage());
         member.changePassword(updateMember.getPassword());
     }
 
@@ -78,14 +79,14 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public void deleteMember(Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
         memberRepository.delete(member);
     }
 
-    public MyPageDto getMyPageInfo(String email) {
-        Member member = memberRepository.findByEmail(email)
+    public MyPageDto getMyPageInfo(Long userId) {
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MEMBER));
 
         return new MyPageDto(member);

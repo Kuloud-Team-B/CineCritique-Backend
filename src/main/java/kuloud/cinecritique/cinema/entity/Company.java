@@ -25,10 +25,10 @@ public class Company {
     }
 
     public void updateInfo(CompanyUpdateDto dto) {
-        if (!dto.getCompanyName().isEmpty() && !dto.getCompanyName().equals(name)) {
+        if (dto.getCompanyName() != null) {
             name = dto.getCompanyName();
         }
-        if (!dto.getIconImage().isEmpty() && !dto.getIconImage().equals(iconImage)) {
+        if (dto.getIconImage() != null) {
             iconImage = dto.getIconImage();
         }
     }

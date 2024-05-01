@@ -10,9 +10,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -21,7 +25,7 @@ public class Admin extends BaseTimeEntity implements UserDetails {
     @Id @GeneratedValue
     @Column(name = "admin_id")
     private Long id;
-    private String account;
+    private String name;
     private String password;
 
     public void changePassword(String password) {
@@ -29,14 +33,19 @@ public class Admin extends BaseTimeEntity implements UserDetails {
     }
 
     @Builder
-    public Admin(String account, String password) {
-        this.account = account;
+    public Admin(String name, String password) {
+        this.name = name;
         this.password = password;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<String> roles = new ArrayList<>();
+        roles.add("ROLE_ADMIN");
+
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override

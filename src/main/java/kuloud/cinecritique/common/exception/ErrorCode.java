@@ -13,6 +13,7 @@ public enum ErrorCode {
     // authorization
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "접근 권한이 없습니다."),
     NOT_EXIST_ADMIN(BAD_REQUEST, "관리자 계정이 일치하지 않습니다."),
+    INVALID_TOKEN(BAD_REQUEST, "유효한 토큰이 아닙니다."),
 
     // favorite
     NOT_EXIST_FAVORITE(BAD_REQUEST, "해당 즐겨찾기를 확인할 수 없습니다."),

@@ -6,7 +6,10 @@ import kuloud.cinecritique.movie.dto.MovieUpdateDto;
 import kuloud.cinecritique.movie.entity.MovieGenre;
 import kuloud.cinecritique.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,24 +32,28 @@ public class MovieApiController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<List<MovieDto>> getAllMovie() {
-        List<MovieDto> result = movieService.getAllMovie();
+    public ResponseEntity<Page<MovieDto>> getAllMovie(@RequestParam MovieGenre genre, Pageable pageable) {
+        Page<MovieDto> result = movieService.getAllMovie(genre, pageable);
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> postMovie(@RequestBody MoviePostDto moviePostDto) {
         movieService.saveMovie(moviePostDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> updateMovie(@RequestBody MovieUpdateDto movieUpdateDto) {
         movieService.updateMovie(movieUpdateDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<Void> deleteMovie(@RequestParam String name) {
         movieService.deleteMovie(name);

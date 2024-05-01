@@ -32,13 +32,13 @@ public class Goods {
     }
 
     public void updateInfo(GoodsUpdateDto dto) {
-        if (!dto.getName().isBlank() && !dto.getName().equals(name)) {
+        if (dto.getName() != null) {
             name = dto.getName();
         }
-        if (dto.getPrice() > 0) {
+        if (dto.getPrice() >= 0 && dto.getPrice() < Integer.MAX_VALUE) {
             price = dto.getPrice();
         }
-        if (!dto.getImage().isBlank() && !dto.getImage().equals(image)) {
+        if (dto.getImage() != null) {
             image = dto.getImage();
         }
     }

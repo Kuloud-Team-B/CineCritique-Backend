@@ -11,13 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Setter
 public class AdminPostDto {
     @NotBlank
-    private String account;
+    private String name;
     @Size(min = 8, max = 32)
     private String password;
 
     public Admin toEntityWithEncoder(PasswordEncoder passwordEncoder) {
         return Admin.builder()
-                .account(account)
+                .name(name)
                 .password(passwordEncoder.encode(password))
                 .build();
     }

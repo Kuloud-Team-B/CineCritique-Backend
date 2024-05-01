@@ -6,6 +6,7 @@ import kuloud.cinecritique.cinema.dto.CompanyUpdateDto;
 import kuloud.cinecritique.cinema.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,18 +21,21 @@ public class CompanyApiController {
         return ResponseEntity.ok(result);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> postCompany(@RequestBody CompanyPostDto companyPostDto) {
         companyService.saveCompany(companyPostDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> updateCompany(@RequestBody CompanyUpdateDto companyUpdateDto) {
         companyService.updateCompany(companyUpdateDto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<Void> deleteCompany(@RequestParam String name) {
         companyService.deleteCompany(name);
