@@ -16,12 +16,13 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.util.*;
 
 
+//@AllArgsConstructor
 @Entity
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor // 모든 필드를 포함하는 생성자를 자동 생성
+@Table(name = "post")
 public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,14 +99,8 @@ public class Post extends BaseTimeEntity {
                            Set<PostHashtagMap> hashtags) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.postImg = postRequestDto.getPostImg();
+        this.postImg = postRequestDto.getImages();
         this.rating = postRequestDto.getRating();
-
-        /*
-        this.movie = movie;
-        this.cinema = cinema;
-        this.goods = goods;
-        */
         if (movie != null) {
             this.movie = movie;
         }
@@ -146,9 +141,8 @@ public class Post extends BaseTimeEntity {
         hashtag.getPosts().add(postHashtagMap);
     }
 
-
-    // Utility method to update hashtags
-    public void setHashtags(Set<Hashtag> newHashtags) {
+    // 해시태그 수정
+    public void updateHashtag(Set<Hashtag> newHashtags) {
         hashtags.clear();
         newHashtags.forEach(this::addHashtag);
     }

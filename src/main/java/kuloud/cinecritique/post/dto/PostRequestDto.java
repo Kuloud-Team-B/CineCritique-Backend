@@ -8,23 +8,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class PostRequestDto {
 
-    private final String title;
-    private final String content;
-    private final String postImg;
-    private final Integer rating;
-    private final String hashtag;
-    private final Long movie;
-    private final Long cinema;
-    private final Long goods;
+    private Long memberId;        // 작성자
+    private String title;         // 제목
+    private String content;       // 본문
+    private String images;        // 첨부사진
+    private Integer rating;       // 평점
+    private Long hashtagMapId;    // 태그
+    private Long movieId;         // 영화
+    private Long cinemaId;        // 영화관
+    private Long goodsId;         // 굿즈
 
-    public PostRequestDto(String title, String content, String postImg, Integer rating, String hashtag, Long movie, Long cinema, Long goods) {
+    public PostRequestDto(Long memberId, String title, String content, String images, Integer rating,
+                          Long hashtagMapId, Long movieId, Long cinemaId, Long goodsId) {
+        this.memberId = memberId;
         this.title = title;
         this.content = content;
-        this.postImg = postImg;
+        this.images = images;
         this.rating = rating;
-        this.hashtag = hashtag;
-        this.movie = movie;
-        this.cinema = cinema;
-        this.goods = goods;
+        this.hashtagMapId = hashtagMapId;
+        this.movieId = movieId;
+        this.cinemaId = cinemaId;
+        this.goodsId = goodsId;
     }
 }
