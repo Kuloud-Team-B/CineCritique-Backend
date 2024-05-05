@@ -1,26 +1,22 @@
 package kuloud.cinecritique.post.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kuloud.cinecritique.member.entity.Member;
+import kuloud.cinecritique.post.NotFoundException;
 import kuloud.cinecritique.post.dto.PostResponseDto;
 import kuloud.cinecritique.post.entity.Post;
 import kuloud.cinecritique.post.mapper.PostResponseMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-
-import kuloud.cinecritique.post.entity.QPost;
-import kuloud.cinecritique.cinema.entity.QCinema;
-import kuloud.cinecritique.goods.entity.QGoods;
-import kuloud.cinecritique.member.entity.QMember;
-import kuloud.cinecritique.movie.entity.QMovie;
+import static kuloud.cinecritique.post.entity.QPost.post;
+import static kuloud.cinecritique.member.entity.QMember.member;
 
 
 @RequiredArgsConstructor
@@ -28,107 +24,173 @@ import kuloud.cinecritique.movie.entity.QMovie;
 public class PostRepositoryImpl implements PostCustomRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final PostResponseMapper postResponseMapper;
+    /*
 
     @Override
     public Page<Post> findAll(Pageable pageable) {
-        return null;
+        JPAQuery<Post> contentQuery = queryFactory.selectFrom(post);
+        List<Post> posts = contentQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(post.count())
+                .from(post);
+        Long total = countQuery.fetchOne();
+
+        return new PageImpl<>(posts, pageable, Optional.ofNullable(total).orElse(0L));
     }
 
     @Override
     public Page<Post> findAllByUser(Pageable pageable, Member member) {
-        return null;
+        JPAQuery<Post> contentQuery = queryFactory.selectFrom(post)
+                .where(post.member.eq(member));
+        List<Post> posts = contentQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(post.count())
+                .from(post)
+                .where(post.member.eq(member));
+        Long total = countQuery.fetchOne();
+
+        return new PageImpl<>(posts, pageable, Optional.ofNullable(total).orElse(0L));
     }
 
     @Override
     public Page<Post> findByHashtags(Pageable pageable, String hashtag) {
-        return null;
+        //QHashtag qHashtag = QHashtag.hashtag;
+        QPostHashtagMap postHashtagMap = QPostHashtagMap.postHashtagMap;
+
+        JPAQuery<Post> contentQuery = queryFactory.selectFrom(post)
+                .join(post.hashtags, postHashtagMap)
+                .join(postHashtagMap.hashtag, hashtag)
+                .where(hashtag.tagName.eq(hashtag));
+        List<Post> posts = contentQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(post.count())
+                .from(post)
+                .join(post.hashtags, postHashtagMap)
+                .join(postHashtagMap.hashtag, qHashtag)
+                .where(qHashtag.tagName.eq(hashtag));
+        Long total = countQuery.fetchOne();
+
+        return new PageImpl<>(posts, pageable, Optional.ofNullable(total).orElse(0L));
     }
+    */
 
     @Override
     public PageImpl<PostResponseDto> getPostList(String query, Pageable pageable) {
-        List<Post> postList = queryFactory
-                .selectFrom(QPost.post)
-                .leftJoin(QPost.post.member, QMember.member).fetchJoin()
-                .leftJoin(QPost.post.movie, QMovie.movie).fetchJoin()
-                .leftJoin(QPost.post.cinema, QCinema.cinema).fetchJoin()
-                .leftJoin(QPost.post.goods, QGoods.goods).fetchJoin()
+        // Content query
+        List<Post> postList = queryFactory.selectFrom(post)
+                .where(post.title.containsIgnoreCase(query).or(post.content.containsIgnoreCase(query)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         Long count = queryFactory
-                .select(QPost.post.count())
-                .from(QPost.post)
+                .select(post.count())
+                .from(post)
+                .where(post.title.contains(query))
                 .fetchOne();
 
-        List<PostResponseDto> postResponseDtoList = postResponseMapper.toDtoList(postList);
+        List<PostResponseDto> postResponseDtoList = PostResponseMapper.INSTANCE.toDtoList(postList);
 
-        return new PageImpl<>(postResponseDtoList, pageable, count);
+        return new PageImpl<>(postResponseDtoList, pageable, Optional.ofNullable(count).orElse(0L));
     }
 
-    @SneakyThrows
     @Override
     public PostResponseDto getPostWithTag(Long id) {
-        Post post = queryFactory.selectFrom(QPost.post)
-                .leftJoin(QPost.post.member, QMember.member).fetchJoin()
-                .leftJoin(QPost.post.movie, QMovie.movie).fetchJoin()
-                .leftJoin(QPost.post.cinema, QCinema.cinema).fetchJoin()
-                .leftJoin(QPost.post.goods, QGoods.goods).fetchJoin()
-                .where(QPost.post.Id.eq(id))
+        Post post1 = queryFactory.select(post)
+                .from(post)
+                .leftJoin(post.hashtags).fetchJoin()
+                .leftJoin(post.member, member).fetchJoin()
+                .where(post.Id.eq(id))
                 .fetchOne();
 
-        if (post == null) throw new ChangeSetPersister.NotFoundException();
+        if (post1 == null) {
+            throw new NotFoundException("Could not found post id : " + id);
+        }
 
-        return postResponseMapper.INSTANCE.toDto(post);
+        return PostResponseMapper.INSTANCE.toDto(post1);
     }
 
     @Override
     public void addLikeCount(Post selectedPost) {
-        queryFactory.update(QPost.post)
-                .set(QPost.post.likeCount, QPost.post.likeCount.add(1))
-                .where(QPost.post.eq(selectedPost))
+        queryFactory.update(post)
+                .set(post.likeCount, post.likeCount.add(1))
+                .where(post.eq(selectedPost))
                 .execute();
     }
 
     @Override
     public void subLikeCount(Post selectedPost) {
-        queryFactory.update(QPost.post)
-                .set(QPost.post.likeCount, QPost.post.likeCount.subtract(1))
-                .where(QPost.post.eq(selectedPost))
+        queryFactory.update(post)
+                .set(post.likeCount, post.likeCount.subtract(1))
+                .where(post.eq(selectedPost))
                 .execute();
     }
 
     @Override
     public List<PostResponseDto> getBestList() {
         List<Post> postList = queryFactory
-                .selectFrom(QPost.post)
-                .leftJoin(QPost.post.member, QMember.member).fetchJoin()
-                .leftJoin(QPost.post.movie, QMovie.movie).fetchJoin()
-                .leftJoin(QPost.post.cinema, QCinema.cinema).fetchJoin()
-                .leftJoin(QPost.post.goods, QGoods.goods).fetchJoin()
-                .orderBy(QPost.post.likeCount.desc())
-                .limit(20)
+                .selectFrom(post)
+                .orderBy(post.likeCount.desc())
+                .limit(10)
                 .fetch();
 
-        return postResponseMapper.toDtoList(postList);
+        return PostResponseMapper.INSTANCE.toDtoList(postList);
     }
 
     @Override
-    public List<Post> findByHashtag(String hashtag) {
-        return List.of();
+    public List<PostResponseDto> getTopList() {
+        List<Post> postList = queryFactory
+                .selectFrom(post)
+                .orderBy(post.likeCount.desc())
+                .limit(10)
+                .fetch();
+
+        return PostResponseMapper.INSTANCE.toDtoList(postList);
     }
 
     @Override
-    public Page<Post> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content, Pageable pageable) {
-        return null;
+    public Page<PostResponseDto> getBestPage(int page, int size, Pageable pageable) {
+        List<Post> postList = queryFactory
+            .selectFrom(post)
+            .orderBy(post.viewCount.desc())
+            .offset((long) page * size)
+            .limit(size)
+            .fetch();
+
+        Long count = queryFactory
+                .select(post.count())
+                .from(post)
+                .fetchOne();
+
+        // Convert List<Post> to List<PostResponseDto>
+        List<PostResponseDto> postResponseDtoList = PostResponseMapper.INSTANCE.toDtoList(postList);
+
+        return new PageImpl<>(postResponseDtoList, pageable, Optional.ofNullable(count).orElse(0L));
     }
 
     @Override
-    public Page<Post> findByMemberId(Long memberId, Pageable pageable) {
-        return null;
-    }
+    public Page<PostResponseDto> getByDateRange(LocalDateTime start, LocalDateTime end, Pageable pageable) {
+        List<Post> postList = queryFactory
+                .selectFrom(post)
+                .where(post.createdDate.between(start, end))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-    @Override
-    public Page<Post> findByTitleContaining(String query, Pageable pageable) {
-        return null;
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.createdDate.between(start, end))
+                .fetchOne();
+
+        List<PostResponseDto> postResponseDtoList = PostResponseMapper.INSTANCE.toDtoList(postList);
+
+        return new PageImpl<>(postResponseDtoList, pageable, Optional.ofNullable(total).orElse(0L));
     }
 }
