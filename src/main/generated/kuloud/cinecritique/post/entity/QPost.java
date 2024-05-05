@@ -28,6 +28,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Integer> commentCount = createNumber("commentCount", Integer.class);
 
+    public final SetPath<kuloud.cinecritique.comment.entity.Comment, kuloud.cinecritique.comment.entity.QComment> comments = this.<kuloud.cinecritique.comment.entity.Comment, kuloud.cinecritique.comment.entity.QComment>createSet("comments", kuloud.cinecritique.comment.entity.Comment.class, kuloud.cinecritique.comment.entity.QComment.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     //inherited
@@ -39,6 +41,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> Id = createNumber("Id", Long.class);
 
+    public final StringPath imageURL = createString("imageURL");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
@@ -47,8 +51,6 @@ public class QPost extends EntityPathBase<Post> {
     public final kuloud.cinecritique.member.entity.QMember member;
 
     public final kuloud.cinecritique.movie.entity.QMovie movie;
-
-    public final StringPath postImg = createString("postImg");
 
     public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
 
