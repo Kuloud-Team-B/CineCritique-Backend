@@ -2,12 +2,18 @@ package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import kuloud.cinecritique.cinema.repository.CinemaRepository;
 import kuloud.cinecritique.comment.entity.Comment;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
+import kuloud.cinecritique.common.exception.CustomException;
+import kuloud.cinecritique.common.exception.ErrorCode;
+import kuloud.cinecritique.goods.repository.GoodsRepository;
 import kuloud.cinecritique.member.entity.Member;
 import kuloud.cinecritique.movie.entity.Movie;
+import kuloud.cinecritique.movie.repository.MovieRepository;
 import kuloud.cinecritique.cinema.entity.Cinema;
 import kuloud.cinecritique.goods.entity.Goods;
+import kuloud.cinecritique.post.dto.PostRequestDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -78,13 +84,17 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
 
-    public Post(Member member, String title, String content, String imageURL, int rating,
+    public Post(Member member, String title, String content, String imageURL,
+                int rating, Integer commentCount, Integer viewCount, Integer likeCount,
                 Movie movie, Cinema cinema, Goods goods, Set<PostHashtagMap> initialHashtags) {
         this.member = member;
         this.title = title;
         this.content = content;
-        this.imageURL = imageURL;
         this.rating = rating;
+        this.imageURL = imageURL;
+        this.likeCount = likeCount;
+        this.viewCount = viewCount;
+        this.commentCount = commentCount;
         this.movie = movie;
         this.cinema = cinema;
         this.goods = goods;
@@ -101,19 +111,8 @@ public class Post extends BaseTimeEntity {
         }
     }
 
-    public void removeHashtag(Hashtag hashtag) {
-        this.hashtags.removeIf(h -> h.getHashtag().equals(hashtag));
-        hashtag.getPosts().removeIf(h -> h.getPost().equals(this));
-    }
-
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.setPost(this);
-    }
-
-    public void removeComment(Comment comment) {
-        this.comments.remove(comment);
-        comment.setPost(null);
+    public void viewCountUp(Post post) {
+        post.viewCount++;
     }
 
     public void incrementLikes() {
@@ -126,35 +125,47 @@ public class Post extends BaseTimeEntity {
         }
     }
 
-    public void incrementViews() {
-        this.viewCount++;
-    }
+    public Post updatePost(PostRequestDto postRequestDto,
+                           MovieRepository movieRepository, CinemaRepository cinemaRepository, GoodsRepository goodsRepository) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.imageURL = postRequestDto.getImageURL();
+        this.rating = postRequestDto.getRating();
+        if (postRequestDto.getMovieId() != null) {
+            this.movie = movieRepository.findById(postRequestDto.getMovieId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_MOVIE));
+        }
 
-    public Post updatePost(String title, String content, String imageURL, int rating,
-                           Movie movie, Cinema cinema, Goods goods) {
-        this.title = title;
-        this.content = content;
-        this.imageURL = imageURL;
-        this.rating = rating;
-        this.movie = movie;
-        this.cinema = cinema;
-        this.goods = goods;
+        if (postRequestDto.getCinemaId() != null) {
+            this.cinema = cinemaRepository.findById(postRequestDto.getCinemaId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_CINEMA));
+        }
+
+        if (postRequestDto.getGoodsId() != null) {
+            this.goods = goodsRepository.findById(postRequestDto.getGoodsId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_GOODS));
+        }
 
         return this;
     }
 
-    public void cleanupBeforeDeletion() {
-        removeAllHashtags();
-        this.comments.forEach(comment -> comment.setPost(null));
-        this.comments.clear();
+    public void updateMember(Member member) {
+        this.member = member;
     }
 
-    private void removeAllHashtags() {
-        hashtags.forEach(h -> {
-            h.getHashtag().getPosts().remove(h);
-            h.setPost(null);
-            h.setHashtag(null);
-        });
-        hashtags.clear();
+    public void updateMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public void updateCinema(Cinema cinema) {
+        this.cinema = cinema;
+    }
+
+    public void updateGoods(Goods goods) {
+        this.goods = goods;
+    }
+
+    public void updateImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }
