@@ -24,6 +24,8 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final kuloud.cinecritique.common.entity.QBaseTimeEntity _super = new kuloud.cinecritique.common.entity.QBaseTimeEntity(this);
 
+    public final ListPath<Comment, QComment> children = this.<Comment, QComment>createList("children", Comment.class, QComment.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     //inherited
@@ -31,10 +33,14 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final kuloud.cinecritique.member.entity.QMember member;
+
+    public final QComment parent;
 
     public final kuloud.cinecritique.post.entity.QPost post;
 
@@ -57,6 +63,7 @@ public class QComment extends EntityPathBase<Comment> {
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new kuloud.cinecritique.member.entity.QMember(forProperty("member")) : null;
+        this.parent = inits.isInitialized("parent") ? new QComment(forProperty("parent"), inits.get("parent")) : null;
         this.post = inits.isInitialized("post") ? new kuloud.cinecritique.post.entity.QPost(forProperty("post"), inits.get("post")) : null;
     }
 
