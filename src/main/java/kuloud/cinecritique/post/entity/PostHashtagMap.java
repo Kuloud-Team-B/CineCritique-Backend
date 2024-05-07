@@ -28,8 +28,23 @@ public class PostHashtagMap {
         PostHashtagMap map = new PostHashtagMap();
         map.post = post;
         map.hashtag = hashtag;
-        // 필요한 초기화 로직 추가 가능
         return map;
     }
 
+    // Set method for Post
+    public void setPost(Post post) {
+        this.post = post;
+        // Optionally, you might want to ensure consistency in bidirectional relationships:
+        if (post != null) {
+            post.getHashtags().add(this);
+        }
+    }
+
+    public void setHashtag(Hashtag hashtag) {
+        this.hashtag = hashtag;
+        // Ensuring consistency
+        if (hashtag != null) {
+            hashtag.getPosts().add(this);
+        }
+    }
 }
