@@ -39,7 +39,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final SetPath<PostHashtagMap, QPostHashtagMap> hashtags = this.<PostHashtagMap, QPostHashtagMap>createSet("hashtags", PostHashtagMap.class, QPostHashtagMap.class, PathInits.DIRECT2);
 
-    public final NumberPath<Long> Id = createNumber("Id", Long.class);
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imageURL = createString("imageURL");
 
