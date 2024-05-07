@@ -2,10 +2,7 @@ package kuloud.cinecritique.post.entity;
 
 import jakarta.persistence.*;
 import kuloud.cinecritique.common.entity.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//@RequiredArgsConstructor
 public class Hashtag extends BaseTimeEntity{
 
     @Id
@@ -24,9 +22,11 @@ public class Hashtag extends BaseTimeEntity{
     private String tagName;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<PostHashtagMap> posts = new HashSet<>();
 
-    public Hashtag(String tagName) {
-            this.tagName = tagName;
+    public void addPost(PostHashtagMap postHashtagMap) {
+        posts.add(postHashtagMap);
+        postHashtagMap.setHashtag(this);
     }
 }
