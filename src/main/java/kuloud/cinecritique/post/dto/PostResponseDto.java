@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import kuloud.cinecritique.comment.dto.CommentResponseDto;
 import kuloud.cinecritique.member.dto.MemberDto;
+import kuloud.cinecritique.post.entity.PostHashtagMap;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostResponseDto {
@@ -27,12 +29,12 @@ public class PostResponseDto {
     @Size(max = 200, message = "Content must not exceed 200 characters")
     private String content;
     private Integer rating;
-    private Set<String> hashtags;
+    private Set<PostHashtagMap> hashtags;
     private String imageURL;
     private Long movieId;
     private Long cinemaId;
     private Long goodsId;
-    private List<CommentResponseDto> comments;
+    private List<CommentResponseDto> commentResponseDtoList;
     private Integer likeCount;
     private Integer viewCount;
     private Integer commentCount;
@@ -43,9 +45,9 @@ public class PostResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public PostResponseDto(Long id, String title, MemberDto member, Set<String> hashtags, String imageURL, String content, Integer likeCount,
+    public PostResponseDto(Long id, String title, MemberDto member, Set<PostHashtagMap> hashtags, String imageURL, String content, Integer likeCount,
                            Integer viewCount, Integer rating, Integer commentCount, Long movieId, Long cinemaId, Long goodsId,
-                           List<CommentResponseDto> comments, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                           List<CommentResponseDto> commentResponseDtoList, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.member = member;
         this.title = title;
@@ -59,7 +61,7 @@ public class PostResponseDto {
         this.movieId = movieId;
         this.cinemaId = cinemaId;
         this.goodsId = goodsId;
-        this.comments = comments;
+        this.commentResponseDtoList = commentResponseDtoList;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
