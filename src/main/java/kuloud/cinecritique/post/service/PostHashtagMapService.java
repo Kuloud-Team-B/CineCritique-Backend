@@ -56,7 +56,8 @@ public class PostHashtagMapService {
 
     private void removeHashtagFromPost(Post post, Hashtag hashtag) {
         PostHashtagMap map = postHashtagMapRepository.findByPostAndHashtag(post, hashtag)
-                .orElseThrow(() -> new EntityNotFoundException("PostHashtagMap not found for post id: " + post.getId() + " and hashtag: " + hashtag.getTagName()));
+                .orElseThrow(() -> new IllegalStateException("Mapping not found"));
         postHashtagMapRepository.delete(map);
+        post.getHashtags().removeIf(m -> m.getHashtag().equals(hashtag));
     }
 }
