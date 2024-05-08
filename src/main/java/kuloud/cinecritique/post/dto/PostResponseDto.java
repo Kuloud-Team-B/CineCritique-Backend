@@ -31,9 +31,9 @@ public class PostResponseDto {
     private Integer rating;
     private Set<PostHashtagMap> hashtags;
     private String imageURL;
-    private Long movieId;
-    private Long cinemaId;
-    private Long goodsId;
+    private Long movie;
+    private Long cinema;
+    private Long goods;
     private List<CommentResponseDto> commentResponseDtoList;
     private Integer likeCount;
     private Integer viewCount;
@@ -46,7 +46,7 @@ public class PostResponseDto {
 
     @Builder
     public PostResponseDto(Long id, String title, MemberDto member, Set<PostHashtagMap> hashtags, String imageURL, String content, Integer likeCount,
-                           Integer viewCount, Integer rating, Integer commentCount, Long movieId, Long cinemaId, Long goodsId,
+                           Integer viewCount, Integer rating, Integer commentCount, Long movie, Long cinema, Long goods,
                            List<CommentResponseDto> commentResponseDtoList, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.member = member;
@@ -58,9 +58,9 @@ public class PostResponseDto {
         this.likeCount = likeCount;
         this.viewCount = viewCount;
         this.commentCount = commentCount;
-        this.movieId = movieId;
-        this.cinemaId = cinemaId;
-        this.goodsId = goodsId;
+        this.movie = movie;
+        this.cinema = cinema;
+        this.goods = goods;
         this.commentResponseDtoList = commentResponseDtoList;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

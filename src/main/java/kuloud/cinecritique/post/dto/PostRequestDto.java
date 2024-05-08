@@ -1,6 +1,7 @@
 package kuloud.cinecritique.post.dto;
 
 import jakarta.validation.constraints.*;
+import kuloud.cinecritique.post.entity.PostHashtagMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,13 +26,13 @@ public class PostRequestDto {
     @Min(0)
     @Max(5)
     private Integer rating;
-    private Set<String> hashtags;
+    private Set<PostHashtagMap> hashtags;
     private Long movieId;
     private Long cinemaId;
     private Long goodsId;
 
     public PostRequestDto(Long memberId, String title, String content, String imageURL, Integer rating,
-                          Set<String> hashtags, Long movieId, Long cinemaId, Long goodsId) {
+                          Set<PostHashtagMap> hashtags, Long movieId, Long cinemaId, Long goodsId) {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
