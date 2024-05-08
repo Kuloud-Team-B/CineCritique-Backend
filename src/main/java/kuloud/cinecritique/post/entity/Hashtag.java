@@ -9,10 +9,10 @@ import java.util.Set;
 
 @Entity
 @Getter
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class Hashtag extends BaseTimeEntity{
 
     @Id
@@ -24,6 +24,10 @@ public class Hashtag extends BaseTimeEntity{
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<PostHashtagMap> posts = new HashSet<>();
+
+    public Hashtag(String tagName) {
+        this.tagName = tagName;
+    }
 
     public void addPost(PostHashtagMap postHashtagMap) {
         posts.add(postHashtagMap);

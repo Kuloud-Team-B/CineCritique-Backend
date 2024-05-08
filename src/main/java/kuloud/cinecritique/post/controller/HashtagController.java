@@ -1,7 +1,8 @@
 package kuloud.cinecritique.post.controller;
 
 import kuloud.cinecritique.post.entity.Hashtag;
-import kuloud.cinecritique.post.repository.HashtagRepository;
+import kuloud.cinecritique.post.service.HashtagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,17 +14,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/hashtags")
+@RequiredArgsConstructor
 public class HashtagController {
-    private final HashtagRepository hashtagRepository;
-
-    public HashtagController(HashtagRepository hashtagRepository) {
-        this.hashtagRepository = hashtagRepository;
-    }
+    private final HashtagService hashtagService;
 
     @GetMapping("/autocomplete")
     public ResponseEntity<List<String>> autocompleteHashtags(@RequestParam String query) {
-        List<Hashtag> hashtags = hashtagRepository.findByHashtagContaining(query);
-        List<String> hashtagNames = hashtags.stream()
+        List<String> hashtagNames = hashtagService.findByTagName(query).stream()
                 .map(Hashtag::getTagName)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(hashtagNames);
